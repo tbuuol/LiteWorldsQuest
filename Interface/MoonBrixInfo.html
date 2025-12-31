@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="de-DE">
+    <head>
+        <title>LiteWorldsQuest</title>
+
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta property="og:title" content="LiteWorlds">
+        <meta property="og:description" content="The Blockchain Rainbow Road">
+        <meta property="og:image" content="https://ipfs.io/ipfs/bafkreighu5z3d5ionmuvhcdvccn4teq2brc3frqlsdm76ayncyisaezv2q">
+        <meta property="og:url" content="https://liteworlds.quest/">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+        <link rel="icon" type="image/x-icon" href="favicon.ico">
+        <link id="MainStyle" rel="stylesheet" href="CSS/Style.css">
+        <link rel="stylesheet" href="CSS/Fonts.css">
+        <link id="HeaderStyle" rel="stylesheet" href="CSS/Header.css">
+        <link rel="stylesheet" href="CSS/Guard.css">
+
+        <script src="Script/Device.js"></script>
+        <script src="Script/Genesis.js" defer></script>
+        <script src="Script/Menu.js" defer></script>
+        
+    </head>
+    <body>
+        <header></header>
+
+        <main>
+            <section>
+                <article>
+                    <h1>Aktionen</h1>
+                    <h3>Dies sind die bisher implementierten Aktionen. Jede Aktion kann weitere Unteraktionen haben:</h3>
+                    <br>
+                    <div id="frame" style="width: 100%;margin: auto;position: relative; z-index: 99998;">
+                        <iframe data-aa='2414883' src='//acceptable.a-ads.com/2414883/?size=Adaptive' style='border:0; padding:0; width:70%; height:auto; overflow:hidden;display: block;margin: auto'></iframe>
+                    </div>
+                    <br>
+                    <ul>
+                        <li>Aktivierung – Der Kern von MoonBrix arbeitet mit 15 Bytes. Diese 15 Bytes, dargestellt als "00", eröffnen das Protokoll.</li>
+                        <li>Abstecken – Domains und IPs können abgesteckt (geclaimt) werden.</li>
+                        <li>Besitzer – Das Eigentumsrecht einer Domain kann übertragen werden.</li>
+                        <li>Listentyp – Domains können als weiße oder schwarze Liste geführt werden.</li>
+                        <li>Liste modifizieren – Adressen können zur Liste hinzugefügt oder entfernt werden.</li>
+                        <li>IP-Namen – Jeder IP kann ein eindeutiger Name innerhalb der Domain zugewiesen werden.</li>
+                        <li>Dateieinschreibung – Dateien (Text, Bilder, Audio, Video) können in die Blockchain geschrieben werden.</li>
+                        <li>Ordner – Ordner können im Dateisystem erstellt oder gelöscht werden.</li>
+                        <li>Dateien – Dateien können in Ordnern erstellt und einer Einschreibung zugeordnet werden.</li>
+                        <li>Eigenschaft – Ähnlich einem Smart Contract; definiert Regeln für einen Tokenraum.</li>
+                        <li>Token – Token können erzeugt, vernichtet, verschickt oder gelistet werden.</li>
+                    </ul>
+                </article>
+
+
+                <article>
+                    <h1>MoonBrix Info</h1>
+                    <h3>Was ist MoonBrix?</h3>
+                    <br>
+                    <p>MoonBrix nutzt den OP_RETURN-Code, um eine Infrastruktur direkt auf der Blockchain aufzubauen.</p>
+                    <p>Durch das Anhängen von Bytes an Transaktionen und anschließendes Auslesen durch einen Interpreter entsteht eine Struktur, die verschiedene Dienste ermöglicht.</p>
+                    <p>Diese Dienste umfassen Domains mit verschiedenen Optionen, IP-Bereiche, bei denen jede Domain ihren eigenen Bereich hat und IPs Namen erhalten können, sowie ein eigenes Dateisystem für jede IP.</p>
+                    <p>Außerdem können Dateien ähnlich dem Ordinals-System ins Dateisystem eingebunden werden, und es gibt ein Token-System, das dem Omni Layer nachempfunden ist.</p>
+                    <br>
+                    <div id="frame" style="width: 100%;margin: auto;position: relative; z-index: 99998;">
+                        <iframe data-aa='2414884' src='//acceptable.a-ads.com/2414884/?size=Adaptive' style='border:0; padding:0; width:70%; height:auto; overflow:hidden;display: block;margin: auto'></iframe>
+                    </div>
+                    <br>
+                    <h3>Auf welcher Blockchain läuft MoonBrix?</h3>
+                    <br>
+                    <p>Bitcoin ist für dieses Protokoll zu limitiert und überlastet (siehe OmniLayer oder Ordinals).</p>
+                    <p>Litecoin kann MoonBrix verarbeiten, abhängig von der Anzahl der Nutzer.</p>
+                    <p>Aktuell wird MoonBrix auf Kotia entwickelt.</p>
+                    <p>MoonBrix ist standardmäßig auf eine maximale Länge von 80 Bytes pro Transaktion ausgelegt, außer bei Dateieinschreibungen, die aktuell bis zu 10.000 Bytes umfassen.</p>
+                    <p>Durch diese Konfiguration und die Möglichkeit, mehrere Blockchains in einer Instanz zusammenzufassen, ist MoonBrix sehr anpassungsfähig und bietet direkt nutzbare Funktionalität.</p>
+                </article>
+
+                <article>
+                <h1>Technische Hinweise & Ausblick</h1>
+                <h3>Systemanforderungen</h3>
+                <br>
+                <p>MoonBrix läuft aktuell ausschließlich unter Linux. Das ist keine Designentscheidung, sondern pure Notwendigkeit. Windows hat ein ziemlich... eigenwilliges Verhältnis zu seinen Sockets – sobald der Sync richtig Gas gibt, kippt das System reihenweise um. Unter Linux hingegen läuft der Prozess stabil, performant und mit deutlich besserem Speicherverhalten.</p>
+                <p>Langfristig ist ein Cross-Plattform-Support geplant, aber erst dann, wenn Windows aufhört, sich beim Socket-Handling wie ein beleidigtes Kind zu benehmen. Bis dahin gilt: Wer ernsthaft mit MoonBrix arbeitet, nutzt Linux – Punkt.</p>
+                <p>MoonBrix ist so konzipiert, dass mehrere Blockchains in einer Instanz parallel verwaltet werden können. Diese Architektur erlaubt es, Daten, Domains, IP-Bereiche, Token und Dateisysteme verschiedener Chains zu verbinden, ohne dass sie sich gegenseitig in die Quere kommen. Das Ziel: ein universelles, kettenübergreifendes Infrastruktur-Protokoll, das nicht nur Daten speichert, sondern auch Interaktionen ermöglicht.</p>
+                <br><br>
+                <h3>Limitierungen</h3>
+                <br>
+                <p>Das Herzstück bildet der Interpreter, der OP_RETURN-Transaktionen ausliest, analysiert und in verwertbare Strukturen übersetzt. Jede Aktion – ob Datei, Token oder Domain – ist ein kleines Puzzleteil in einem größeren System, das auf Einfachheit und Geschwindigkeit ausgelegt ist.</p>
+                <p>Der aktuelle Limitierungsrahmen beträgt 80 Bytes pro Standard-Transaktion, Dateieinschreibungen liegen bei bis zu 10.000 Bytes. Diese Grenzen wurden bewusst gesetzt, um den Netzwerk-Traffic niedrig zu halten und den Durchsatz stabil zu halten. Eine spätere Erhöhung über Chunking-Systeme ist denkbar.</p>
+                <br>
+                <div id="frame" style="width: 100%;margin: auto;position: relative; z-index: 99998;">
+                    <iframe data-aa='2414885' src='//acceptable.a-ads.com/2414885/?size=Adaptive' style='border:0; padding:0; width:70%; height:auto; overflow:hidden;display: block;margin: auto'></iframe>
+                </div>
+                <br>
+                <h3>Zukunftspläne</h3>
+                <br>
+                <p>In Zukunft sind folgende Erweiterungen vorgesehen:</p>
+                <p>- Multi-Chain-Kommunikation (Litecoin, Kotia, evtl. Dogecoin)</p>
+                <p>- Erweiterte Tokenlogik mit Eigenschaften und Smart-Asset-Verhalten</p>
+                <p>- Dezentralisierte Ordnerstrukturen und dateibasierte Signaturen</p>
+                <p>- Vollautomatisierte Sync-Mechanismen zwischen Nodes</p>
+                <p>- Ein optionales Frontend für Entwickler mit Live-Datenansicht</p>
+                <p>MoonBrix versteht sich nicht als weiteres „Blockchain-Projekt“, sondern als Fundament. Eine Basis, auf der Dienste, Netzwerke und Applikationen entstehen können – robust, direkt und ohne Abhängigkeiten von externen Plattformen. Kein JSON-Overload, kein überkomplexes Framework. Nur klare Bytes, saubere Logik und ein Ziel: Kontrolle über die eigene Infrastruktur zurückholen.</p>
+            </article>
+
+            </section>
+            
+            <div id="Guard">
+                <!--div class="campfire"></div!-->
+            </div>
+        </main>       
+    </body>
+</html>

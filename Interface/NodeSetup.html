@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="de-DE">
+    <head>
+        <title>LiteWorldsQuest</title>
+
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta property="og:title" content="LiteWorlds">
+        <meta property="og:description" content="The Blockchain Rainbow Road">
+        <meta property="og:image" content="https://ipfs.io/ipfs/bafkreighu5z3d5ionmuvhcdvccn4teq2brc3frqlsdm76ayncyisaezv2q">
+        <meta property="og:url" content="https://liteworlds.quest/">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+        <link rel="icon" type="image/x-icon" href="favicon.ico">
+        <link id="MainStyle" rel="stylesheet" href="CSS/Style.css">
+        <link rel="stylesheet" href="CSS/Fonts.css">
+        <link id="HeaderStyle" rel="stylesheet" href="CSS/Header.css">
+        <link rel="stylesheet" href="CSS/Guard.css">
+
+        <script src="Script/Device.js"></script>
+        <script src="Script/Genesis.js" defer></script>
+        <script src="Script/Menu.js" defer></script>
+        
+    </head>
+    <body>
+        <header></header>
+
+        <main>
+            <section>
+                <article>
+                    <h1>Linux installieren</h1>
+                    <h3>Wenn du es geschafft hast, vom USB-Stick zu starten (booten)</h3>
+                    <br>
+
+                    <p>1. Als Erstes siehst du ein kleines Menü. Dort wählst du <em>Try or Install Ubuntu Server</em>. 
+                    Anschließend läuft einiges an Text über den Bildschirm – das ist völlig normal und dauert nur wenige Sekunden bis Minuten.</p>
+
+                    <p><strong>Tipp:</strong> Navigieren kannst du im folgenden Menü mit der Tabulatortaste (Tab), es gibt hier noch keinen Mauszeiger!</p>
+                    <br>
+
+                    <div id="frame" style="width: 100%;margin: auto;position: relative; z-index: 99998;">
+                        <iframe data-aa='2415519' src='//acceptable.a-ads.com/2415519/?size=Adaptive' style='border:0; padding:0; width:70%; height:auto; overflow:hidden;display: block;margin: auto'></iframe>
+                    </div>
+                    <br>
+
+                    <p>2. Danach kommst du zur Sprachauswahl. Wähle deine Sprache aus oder lass sie auf Englisch – ganz wie du magst.
+                    Anschließend folgt die Tastaturauswahl. Hier ist es wichtig, das richtige Layout für deine Tastatur zu wählen, 
+                    sonst bekommst du später Probleme mit Sonderzeichen! Wenn du dir nicht sicher bist, welches Layout du hast, kannst du die Option <em>Identify Keyboard</em> verwenden.
+                    Dort musst du ein paar Tasten drücken, und das System erkennt automatisch dein Layout. Sobald das Layout stimmt navigiere mit der Tab-Taste zu <em>Done</em> und bestätige mit Enter.</p>
+                    <br>
+
+                    <p>3. 
+                    Im nächsten Schritt wirst du gefragt, ob du nur einen Minimal-Server installieren willst – hier ändern wir nichts, einfach weiter.
+                    Dasselbe gilt für die Netzwerkeinstellungen, es sei denn, du nutzt WLAN. 
+                    In dem Fall gib deine SSID und dein WLAN-Passwort ein, um dich zu verbinden. Die Proxy-Konfiguration lassen wir auch leer.</p>
+                    <br>
+
+                    <p>4. Danach kontaktiert das System den Ubuntu-Spiegelserver, 
+                    von dem später die Updates kommen – einfach durchlaufen lassen.  
+                    Jetzt kommt die Festplattenauswahl: Entferne das Kreuz bei <strong>LVM</strong>. 
+                    LVM ist etwas komplizierter und für unsere Zwecke unnötig.  
+                    Navigiere mit den Pfeiltasten auf <em>LVM</em>, drücke die Leertaste, 
+                    und geh dann mit Tab auf <em>Done</em>.</p>
+                    <br>
+
+                    <p>5. Fast geschafft! ⚠️ <strong>ACHTUNG:</strong> Nach der nächsten Bestätigung wird die GESAMTE FESTPLATTE GELÖSCHT 
+                    und Linux installiert. Vergewissere dich also, dass keine wichtigen Daten mehr darauf liegen.  
+                    Du siehst jetzt eine Zusammenfassung, die du doppelt bestätigen musst.</p>
+                    <br>
+
+                    <p>6. Anschließend gib deinem neuen PC/Server einen Namen (z. B. <em>bitcoin</em>) 
+                    und lege einen Benutzer an. Ubuntu Pro brauchen wir nicht.  
+                    Die SSH-Einrichtung überspringen wir – wir nutzen später <em>RustDesk</em>.  
+                    Auch keine zusätzlichen Pakete installieren – einfach auf „Weiter“ gehen.</p>
+                    <br>
+
+                    <p>Puh! Was für ein Ritt, oder? 😄 Endlich installiert es!  
+                    Oben links siehst du, was gerade passiert. 
+                    Solang dort nicht <em>Installation complete</em> steht und unten <em>Reboot now</em> erscheint, 
+                    kannst du dich zurücklehnen – oder dir eine Suppe machen. 🍲</p>
+                    <br><br>
+
+                    <h3>So, die Installation ist fertig und ich habe das Gerät neu gestartet.  
+                    Was soll das denn sein? Ist ja nur Schrift!</h3>
+                    <br>
+
+                    <p>Gut erkannt! Ein Linux-Server hat standardmäßig nur eine Terminal-Oberfläche.  
+                    Aber keine Sorge – gleich wird’s bunt! Ein paar Schritte fehlen noch.</p>
+                    <br>
+
+                    <p>1. <strong>UPDATE & UPGRADE:</strong>  
+                    Melde dich mit deinem neuen Benutzer an (erst Benutzername + Enter, dann Passwort + Enter – 
+                    ja, die Passwort-Eingabe wird nicht angezeigt).  
+                    Gib dann ein:  
+                    <code style="background-color: black;">sudo apt update</code>  
+                    und drücke Enter. Wenn es fertig ist:  
+                    <code style="background-color: black;">sudo apt upgrade -y</code>  
+                    und drücke Enter. Damit bringst du dein System auf den neuesten Stand.</p>
+                    <br>
+
+                    <p>2. <strong>Farbe & Bunt:</strong>  
+                    Jetzt installieren wir eine grafische Oberfläche:  
+                    <code style="background-color: black;">sudo apt install lxqt -y</code>
+                    und drücke Enter. Warum <em>LXQt</em>? Ganz einfach – leichtgewichtig, schnell, effizient!  
+                    Sobald es fertig ist, gib ein:  
+                    <code style="background-color: black;">reboot</code>  
+                    und rate mal, Enter! Jetzt startet dein PC neu und du wirst dich in einer grafischen Oberfläche wiederfinden.<br><b>Gut gemacht Padawan!</b></p>
+                    <br>
+
+                    <p><strong>Anmerkung:</strong>  
+                    Diese Anleitung wurde auf einer virtuellen Maschine getestet mit 1 CPU-Kern und 2048 MB RAM.</p>
+                </article>
+
+
+                <article>
+                    <h1>Installations Hilfe</h1>
+                    <h3>Warum soll ich mir den Aufwand machen?</h3>
+                    <br>
+                    <p>Auf dieser Seite findest du eine Schritt für Schritt Anleitung wie du dir selbst auf deinem PC Linux und/oder Bitcoin oder andere Kernknoten installieren kannst und somit deine eigene kleine digitale Bank zuhause hast.</p>
+                    <br><br>
+                    <h3>Warum Linux?</h3>
+                    <br>
+                    <p>Es ist nicht zwingend notwendig Linux zu nutzen, ich empfehle es aber. Keine automatischen Updates wie bei Windows garantieren dir einen unterbrechungsfreien Betrieb.</p>
+                    <br>
+                    <div id="frame" style="width: 100%;margin: auto;position: relative; z-index: 99998;">
+                        <iframe data-aa='2415520' src='//acceptable.a-ads.com/2415520/?size=Adaptive' style='border:0; padding:0; width:70%; height:auto; overflow:hidden;display: block;margin: auto'></iframe>
+                    </div>
+                    <br>
+                    <h3>OK, Wie fange ich an und was brauch ich alles?</h3>
+                    <br>
+                    <p>Zunächst einmal was du brauchst: Du solltest einen 2. PC haben, ein Mini PC reicht völlig aus wie z.B. ein Raspberry oder ähnliches. Jeder herkömmliche PC tut es aber auch.</p>
+                    <p>Für die Installation benötigst du zusätzlich ein Monitor, eine Maus sowie Tastatur und einen USB Stick. UND ganz wichtig, Internet Verbindung! Bevorzugt Netzwerkkabel aber WLAN geht auch, ist aber etwas kniffliger. Ich empfehle erstmal Kabel und dann später umstellen auf WLAN.</p>
+                    <p>Aus dem USB Stick machen wir das Installationsmedium: <strong>Achtung: Alle Daten auf dem USB Stick werden bei der Umwandlung in einen Linux Stick gelöscht!</strong> Dazu lädst du dir <a href="https://ubuntu.com/download/server" target="_blank">Ubuntu Server</a> herunter (in diesem Beispiel nutzen wir Version 24.04.3 LTS) und ein Tool um dieses Image auf den USB Stick zu schreiben.</p>
+                    <p>Ich empfehle <a href="https://rufus.ie" target="_blank">Rufus</a> als Windows Nutzer. Rufus ist ziemlich selbst erklärend. Einfach Image und USB Stick auswählen und auf START klicken. Hier dürften sich jetzt noch 1-2 Fenster öffnen, einfach mit JA, OK oder WEITER bestätigen. Mehr Infos zu Rufus selbst findest du auf der Rufus-Website.</p>
+                    <p>Sobald das fertig ist solltest du dein zweiten PC nun von diesem USB Stick aus starten bzw. booten können. Falls nichts passiert, beim Start in das Bootmenu gehen. Jeder PC hat dafür einen speziellen Hotkey, meist F10 oder F12.</p>
+                </article>
+
+                <article>
+                    <h1>Kernknoten installieren</h1>
+                    <h3>Geht’s jetzt endlich los? Wie bekomme ich Bitcoin Core?</h3>
+                    <br>
+
+                    <p>
+                        Es gibt mehrere Varianten, wie du an die Bitcoin-Core-Programmdaten kommst.
+                        Vom umständlichen, aber sichersten Weg über 
+                        <a href="https://github.com/bitcoin/bitcoin/releases" target="_blank">GitHub</a> – 
+                        dort findest du den Quellcode, den du selbst kompilieren müsstest – 
+                        bis hin zur schnellen Variante:
+                        <a href="https://bitcoin.org/bin/bitcoin-core-28.1/bitcoin-28.1-x86_64-linux-gnu.tar.gz" target="_blank">Klicke hier</a>.
+                    </p>
+                    <br>
+
+                    <div id="frame" style="width: 100%;margin: auto;position: relative; z-index: 99998;">
+                        <iframe data-aa='2415521' src='//acceptable.a-ads.com/2415521/?size=Adaptive' style='border:0; padding:0; width:70%; height:auto; overflow:hidden;display: block;margin: auto'></iframe>
+                    </div>
+                    <br>
+
+                    <p>
+                        Den komplizierten Weg führe ich hier nicht aus – das sprengt einfach den Rahmen.
+                        Wenn du den direkten Download wählst, erhältst du ein Archiv namens
+                        <em>bitcoin-28.1-x86_64-linux-gnu.tar.gz</em> - <br> <strong>Quelle: bitcoin.org</strong> - in deinem Download-Ordner.
+                    </p>
+
+                    <p>
+                        Einfach das Archiv doppelklicken und den Ordner darin 
+                        (<em>bitcoin-28.1</em>) herausziehen.  
+                        Jetzt liegt dein Bitcoin-Core-Programm im Downloads-Ordner oder auf dem Desktop – je nachdem, wo du es abgelegt hast.
+                        Ich selbst habe mir im Dokumente-Ordner einen Unterordner <em>Nodes</em> angelegt, 
+                        so bleibt es schön übersichtlich.  
+                        (Aber das ist Geschmackssache.)
+                    </p>
+                    <br>
+
+                    <p>
+                        Im Ordner <em>bitcoin-28.1</em> findest du einen Unterordner <em>bin</em>.  
+                        Darin liegen die eigentlichen Binärdateien von Bitcoin Core – also das, was du ausführst.
+                        <strong>Bevor du das tust, ein paar Erklärungen:</strong>
+                    </p>
+
+                    <p>1. Die Datei <em>bitcoin-qt</em> ist die grafische Oberfläche.  
+                    Du kannst sie mit einem Doppelklick starten – würde ich aber nicht empfehlen. Warum?</p>
+
+                    <p>
+                        2. Speicherort der Blockchain-Dateien:  
+                        Wenn man <em>bitcoin-qt</em> mit Doppelklick startet, wird man nach einem Speicherort gefragt.  
+                        Das funktioniert grundsätzlich zuverlässig, aber wenn du mehr Kontrolle willst, gibt’s einen Trick:  
+                        Lege im <em>bitcoin-28.1</em>-Ordner einfach einen neuen Ordner an – nennen wir ihn <em>data</em>.  
+                        Wenn du diesen Weg gehst, musst du Bitcoin Core aber jedes Mal über die Konsole starten, 
+                        damit du den Speicherort mitgeben kannst.
+                    </p>
+                    <br>
+
+                    <p>
+                        Also: Entweder einfach Doppelklick auf <em>bitcoin-qt</em> und der grafischen Oberfläche folgen,  
+                        ODER im <em>bitcoin-28.1</em>-Ordner mit Rechtsklick auf eine freie Fläche → <em>Open in Terminal</em>.
+                    </p>
+                    <br>
+
+                    <p>
+                        Dort gibst du ein:<br>
+                        <code style="background-color: black;">bin/bitcoin-qt -datadir=data</code>
+                    </p>
+
+                    <p>
+                        Wenn du Bitcoin später einmal per Doppelklick startest oder den Parameter 
+                        <code style="background-color: black;">-datadir=data</code> vergisst, lädt es die Blockchain erneut – also von vorne!  
+                        Ist also eher etwas für fortgeschrittene Nutzer.
+                    </p>
+
+                    <p>
+                        Herzlichen Glückwunsch 🎉  
+                        Dein Kernknoten beginnt jetzt mit der Synchronisation.  
+                        Das dauert je nach Hardware ungefähr eine Woche (Stand Oktober 2025)  
+                        und benötigt rund 600 GB Speicherplatz.
+                    </p>
+                    <br><br>
+
+                    <h3> Muss ich wirklich alles von der Blockchain speichern?  
+                    Mein kleiner PC hat nicht so viel Platz... </h3>
+                    <br>
+
+                    <p>
+                        Kommt drauf an, was du mit deinem Kernknoten machen willst.  
+                        Wenn du ihn nur privat nutzt und keine weiteren Dienste wie Lightning oder Protokolle aufsetzen willst, 
+                        kannst du den Speicherbedarf deutlich reduzieren.
+                    </p>
+
+                    <p>
+                        In deinem <em>data</em>-Ordner gibt es eine Datei namens <em>bitcoin.conf</em>.  
+                        Dort kannst du diese Zeile hinzufügen:  
+                        <code style="background-color: black;">prune=10000</code>
+                    </p>
+
+                    <p>
+                        Damit wird deine Blockchain laut Dokumentation auf etwa 10 GB begrenzt.  
+                        Sobald die Grenze erreicht ist, werden alte Blöcke automatisch gelöscht.  
+                        Du behältst also nur die letzten paar Wochen – für privaten Gebrauch völlig ausreichend.
+                    </p>
+                    <br>
+
+                    <p>
+                        Wenn du allerdings mehr vorhast – etwa Lightning, Ordinals oder Analyse-Tools –  
+                        brauchst du die komplette Blockchain *und* den Transaktionsindex.  
+                        In dem Fall erweiterst du deine <em>bitcoin.conf</em> um:
+                    </p>
+
+                    <p>
+                        <code style="background-color: black;">
+                        txindex=1<br>
+                        rpcuser=user<br>
+                        rpcpassword=pass<br>
+                        rpcallowip=127.0.0.1
+                        </code>
+                    </p>
+
+                    <br><br>
+                    <h3>Wie läuft das mit dem ganzen RPC-Zeug?</h3>
+                    <p>Dazu später mehr 😉</p>
+                </article>
+
+
+            </section>
+            
+            <div id="Guard">
+                <!--div class="campfire"></div!-->
+            </div>
+        </main>       
+    </body>
+</html>

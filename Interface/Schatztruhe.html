@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="de-DE">
+    <head>
+        <title>LiteWorldsQuest</title>
+
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta property="og:title" content="LiteWorlds">
+        <meta property="og:description" content="The Blockchain Rainbow Road">
+        <meta property="og:image" content="https://ipfs.io/ipfs/bafkreighu5z3d5ionmuvhcdvccn4teq2brc3frqlsdm76ayncyisaezv2q">
+        <meta property="og:url" content="https://liteworlds.quest/">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+        <link rel="icon" type="image/x-icon" href="favicon.ico">
+        <link id="MainStyle" rel="stylesheet" href="CSS/Style.css">
+        <link rel="stylesheet" href="CSS/Fonts.css">
+        <link id="HeaderStyle" rel="stylesheet" href="CSS/Header.css">
+        <link rel="stylesheet" href="CSS/Guard.css">
+
+        <script src="Script/Device.js"></script>
+        <script src="Script/Bitcoin.js" defer></script>
+        <script src="Script/Litecoin.js" defer></script>
+        <script src="Script/Genesis.js" defer></script>
+        <script src="Script/Menu.js" defer></script>
+        
+    </head>
+    <body>
+        <header></header>
+
+        <main>
+            <section>
+                <article>
+                    <h1 style="color: darkorange;">Bitcoin</h1>
+                    <iframe src="https://coinpaprika.com/coin/btc-bitcoin/embed/?interval=30s&modules[]=market_details&modules[]=chart&nightMode=true&primaryCurrency=USD&updateActive=false&volumeVisible=false" style="border:0; width:100%; height:650px; display: block;"></iframe>
+                    <h3>Benutzte Adresse im Bitcoin Netwerk:</h3>
+                    <p style="color: darkorange; text-align: center;">bc1q33m7tds866865ln28d5fxry6mkjfhpekkgmthp</p>
+                    <br>
+                    <h3>Verwahrte Bitcoin auf dieser Adresse:</h3>
+                    <p style="color: darkorange; text-align: center;" id="BalanceBTC"></p>
+                    <br>
+                    <h3>Summe (theoretischer Wert inUSD basierend auf aktuellem Kurs):</h3>
+                    <p id="BalanceBTCUSD" style="text-align: center;"></p>
+                    <br>
+                    <div id="frame" style="width: 100%;margin: auto;position: relative; z-index: 99998;">
+                        <iframe data-aa='2414873' src='//acceptable.a-ads.com/2414873/?size=Adaptive' style='border:0; padding:0; width:70%; height:auto; overflow:hidden;display: block;margin: auto'></iframe>
+                    </div>
+                </article>
+                <article>
+                    <h1>Schatztruhe</h1>
+                    <h3>Was ist die Schatztruhe?</h3>
+                    <br>
+                    <p>Die Schatztruhe besteht aus jeweils einer Adresse aus einem Blockchain-Netzwerk.</p>
+                    <p>Hier zu sehen: links Bitcoin, rechts Litecoin und unten die Gesamtsumme.</p>
+                    <br>
+                    <div id="frame" style="width: 100%;margin: auto;position: relative; z-index: 99998;">
+                        <iframe data-aa='2414882' src='//acceptable.a-ads.com/2414882/?size=Adaptive' style='border:0; padding:0; width:70%; height:auto; overflow:hidden;display: block;margin: auto'></iframe>
+                    </div>
+                    <br>
+                    <h3>Wozu das Ganze?</h3>
+                    <br>
+                    <p>Die Schatztruhe dient als Echtzeitanzeige der Reserven dieses Projekts.</p>
+                    <p>Außerdem bietet sie die Gewissheit, dass hier wirklich mit der Blockchain gearbeitet wird – und nicht nur mit Einheiten spekuliert wird.</p>
+                    <br>
+                    <h3>Gesamtsumme (theoretischer Wert in USD basierend auf aktuellen Kursen):</h3>
+                    <p id="Total" style="text-align: center;"></p>
+                    <br><br>
+                    <h3>Verhältnis Bitcoin zu Litecoin</h3>
+                    <p><b>Maximale Versorgung: </b> Das mathematische, fest codierte Verhältnis ist <b>21</b> Millionen Bitcoin zu <b>84</b> Millionen Litecoin.<br>=><b> 1:4</b></p>
+                    <br>
+                    <p><b>Aktuelle Versorgung: </b><br> Bitcoin: <b id="SupplyBTC"></b><br> Litecoin: <b id="SupplyLTC"></b><br>=> <b id="SupplyRatio"></b></p>
+                    <br>
+                    <p><b>Verhältnis durch Preis: </b>Bitcoin:Litecoin<br>=><b id="PriceRatio"></b></p>
+                    <br>
+                    <p><b>Noch zu schürfende Münzen: </b><br> Bitcoin: <b id="toMineBTC"></b><br> Litecoin: <b id="toMineLTC"></b></p>
+                    <br>
+                    <h3>Halbierungs Ereignisse</h3>
+                    <p><b>Blöcke bis zur nächsten Halbierung:</b><br>Bitcoin: <b id="BlocksTillHalvingBTC"></b><br>Litecoin: <b id="BlocksTillHalvingLTC"></b></p>
+                    <br>
+                    <p><b>Aktuelle Belohnung pro Block:</b><br>Bitcoin: <b id="RewardBTC"></b><br>Litecoin: <b id="RewardLTC"></b></p>
+                    <br>
+                    <p><b>Noch zu schürfende Münzen bis Halbierung:</b><br>Bitcoin: <b id="RewardTillHalvingBTC"></b><br>Litecoin: <b id="RewardTillHalvingLTC"></b></p>
+                    <br><br>
+                    <h2>Benutzte Quellen:</h2>
+                    <p onclick='window.open("https://mempool.space/address/bc1q33m7tds866865ln28d5fxry6mkjfhpekkgmthp", "_blank")' style="cursor: crosshair; color: crimson; text-align: center;">- mempool.space für Bitcoin</p>
+                    <p onclick='window.open("https://litecoinspace.org/address/ltc1q8efhd0pekgttgw23xuracy68fj4vw6snjxk9l9", "_blank")' style="cursor: crosshair; color: crimson; text-align: center;">- litecoinspace.org für Litecoin</p>
+                    <p onclick='window.open("https://coinpaprika.com", "_blank")' style="cursor: crosshair; color: crimson; text-align: center;">- coinpaprika.com für Preise und Versorgung</p>
+                </article>
+                <article>
+                    <h1 style="color: dodgerblue;">Litecoin</h1>
+                    <iframe src="https://coinpaprika.com/coin/ltc-litecoin/embed/?interval=30s&modules[]=market_details&modules[]=chart&nightMode=true&primaryCurrency=USD&updateActive=true&volumeVisible=false" style="border:0; width:100%; height:650px; display: block;"></iframe>
+                    <h3>Benutzte Adresse im Litecoin Netwerk:</h3>
+                    <p style="color: dodgerblue; text-align: center;">ltc1q8efhd0pekgttgw23xuracy68fj4vw6snjxk9l9</p>
+                    <br>
+                    <h3>Verwahrte Litecoin auf dieser Adresse:</h3>
+                    <p style="color: dodgerblue; text-align: center;" id="BalanceLTC"></p>
+                    <br>
+                    <h3>Summe (theoretischer Wert in USD basierend auf aktuellem Kurs):</h3>
+                    <p id="BalanceLTCUSD" style="text-align: center;"></p>
+                    <br>
+                    <div id="frame" style="width: 100%;margin: auto;position: relative; z-index: 99998;">
+                        <iframe data-aa='2414874' src='//acceptable.a-ads.com/2414874/?size=Adaptive' style='border:0; padding:0; width:70%; height:auto; overflow:hidden;display: block;margin: auto'></iframe>
+                    </div>
+                </article>
+            </section>
+            
+            <div id="Guard">
+                <!--div class="campfire"></div!-->
+            </div>
+        </main>       
+    </body>
+</html>
