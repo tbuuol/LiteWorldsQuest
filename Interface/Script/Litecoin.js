@@ -110,7 +110,7 @@ class Litecoin {
         const array = new Array
         array.Legacy = new Array // Legacy
         array.Omni = new Array // Omni
-        array.SegWit = new Array // SegWit
+        //array.SegWit = new Array // SegWit
 
         for (let a = 0; a < 20; a++) {
             const childpkh = this.root.derivePath("m/44'/2'/0'/0/" +a)
@@ -127,15 +127,15 @@ class Litecoin {
                 network: this.network
             })
 
-            const childwpkh = this.root.derivePath("m/84'/2'/0'/0/" +a)
+            /*const childwpkh = this.root.derivePath("m/84'/2'/0'/0/" +a)
             const keypairwpkh = bitcoin.payments.p2wpkh({ 
                 pubkey: childwpkh.publicKey, 
                 network: this.network 
-            })
+            })*/
 
             array.Legacy.push(keypairpkh.address)
             array.Omni.push(keypairsh.address)
-            array.SegWit.push(keypairwpkh.address)
+            //array.SegWit.push(keypairwpkh.address)
         }
 
         return array
@@ -176,4 +176,16 @@ class Litecoin {
         return array
     }
 
+    async UTXO(addresses) {
+        const url = "https://litecoinspace.org/api/address/"
+        const urls = new Array
+
+        for (let a = 0; a < addresses.length; a++) {
+            urls.push(url + addresses[a] + "/utxo")
+        }
+
+        const p = urls.map(u => fetch(u).then(r => r.json()))
+        const e = await Promise.all(p)
+        return e
+    }
 }

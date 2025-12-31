@@ -4,22 +4,13 @@ function getEntrophy() {
 }
 
 
-async function saveEncryptedSeed(seed, password) {
-  const encrypted = await encryptAES(seed, password);
+async function saveEncryptedSeed(coin, seed, password) {
   const Meta = getMeta()
-  Meta.Seeds.push(encrypted)
 
-  //console.log(Meta)
+  const encrypted = await encryptAES(Meta[coin], seed, password);
+  Meta[coin].Seeds.push(encrypted)
 
   setMeta(Meta)
-
-  //localStorage.setItem("wallet", encrypted);
-
-  //console.log(encrypted)
-
-  //const decrypted = await decryptAES(encrypted, password)
-  //console.log(decrypted)
-  //console.log(bip39.entropyToMnemonic(decrypted))
 }
 
 async function saveEncryptedKey(pkey, password) {
@@ -32,17 +23,12 @@ async function saveEncryptedKey(pkey, password) {
   setMeta(Meta)
 }
 
-async function loadEncryptedSeed(password) {
-  //const encrypted = localStorage.getItem("wallet");
-  //const key = await deriveKey(password);
+async function loadEncryptedSeed(Meta, password) {
+  //const Meta = getMeta()
 
-  //return await decryptAES(encrypted, key);
-
-  const Meta = getMeta()
   if (Meta.Seeds.length > 0) {
     const encrypted = new Uint8Array(Object.values(Meta.Seeds[0]))
-    //console.log(encrypted)
-    return await decryptAES(encrypted, password)
+    return await decryptAES(Meta, encrypted, password)
   }
 }
 
@@ -59,9 +45,9 @@ async function loadEncryptedKey(password) {
   return array
 }
 
-async function encryptAES(secret, password) {
+async function encryptAES(Meta, secret, password) {
   const enc = new TextEncoder()
-  const Meta = getMeta()
+  //const Meta = getMeta()
 
   // Passwort → Key ableiten (PBKDF2)
   const baseKey = await crypto.subtle.importKey(
@@ -107,9 +93,9 @@ async function encryptAES(secret, password) {
   return new Uint8Array(ciphertext)
 }
 
-async function decryptAES(ciphertext, password) {
+async function decryptAES(Meta, ciphertext, password) {
     const enc = new TextEncoder();
-    const Meta = getMeta()
+    //const Meta = getMeta()
     const salt = new Uint8Array(Object.values(Meta.Salt))
     const iv = new Uint8Array(Object.values(Meta.IV))
 

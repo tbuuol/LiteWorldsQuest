@@ -1,13 +1,18 @@
-.Login {
-    position: relative;
-    height: 100%;
-    width: 100%;
-    padding-top: 21%;
+.LoginBG {
+    position: absolute;
+    height: 92dvh;
+    width: 100dvw;
     background-color: #111;
-    top: 0;
-    left: 0;
+    top: 8dvh;
     color: #0f0;
     text-align: center;
+}
+
+.Login {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .Seed {
