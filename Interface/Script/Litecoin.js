@@ -1,7 +1,4 @@
 class Litecoin {
-    MEMPOOL
-    COINPAPRIKA
-
     constructor() {
         this.MEMPOOL = "https://litecoinspace.org/api/address/ltc1q8efhd0pekgttgw23xuracy68fj4vw6snjxk9l9/utxo"
         this.COINPAPRIKA = "https://api.coinpaprika.com/v1/tickers/ltc-litecoin"
