@@ -17,6 +17,10 @@ async function Menu(point) {
         case 'DSGVO':
             url.pathname = '/Interface/DSGVO.html'
             break
+
+        case 'Litecoin':
+            url.pathname = '/Interface/LitecoinWallet.html'
+            break
     
         default:
             url.pathname = '/Genesis.html'

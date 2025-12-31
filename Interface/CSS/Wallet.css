@@ -1,0 +1,17 @@
+.Login {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    padding-top: 21%;
+    background-color: #111;
+    top: 0;
+    left: 0;
+    color: #0f0;
+    text-align: center;
+}
+
+.Seed {
+    width: 80dvw;
+    height: 25dvh;
+    resize: none;
+}

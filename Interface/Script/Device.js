@@ -28,21 +28,23 @@ async function Header() {
         const result = await response.text()
         document.body.children[0].innerHTML = result
 
-        if (window.location.href.includes('Genesis.html')) document.getElementById("Headline").innerHTML = "Genesis"
+        document.getElementById("Headline").innerHTML = "Genesis"
         if (window.location.href.includes('Schatztruhe.html')) { document.getElementById("Headline").innerHTML = "Schatztruhe"; Schatztruhe() }
         if (window.location.href.includes('MoonBrixInfo.html')) document.getElementById("Headline").innerHTML = "MoonBrix Info"
         if (window.location.href.includes('DSGVO.html')) document.getElementById("Headline").innerHTML = "DSGVO"
         if (window.location.href.includes('NodeSetup.html')) document.getElementById("Headline").innerHTML = "Setup Guide"
+        if (window.location.href.includes('LitecoinWallet.html')) document.getElementById("Headline").innerHTML = "Łitecoin Wallet"
     } else {
         const response = await fetch("https://liteworlds.quest/Interface/Header.html")
         const result = await response.text()
         document.body.children[0].innerHTML = result
 
-        if (window.location.href.includes('Genesis.html')) document.getElementById("Headline").innerHTML = "ŁiteWorldsQuest - Genesis"
+        document.getElementById("Headline").innerHTML = "ŁiteWorldsQuest - Genesis"
         if (window.location.href.includes('Schatztruhe.html')) { document.getElementById("Headline").innerHTML = "ŁiteWorldsQuest - Schatztruhe"; Schatztruhe() }
         if (window.location.href.includes('MoonBrixInfo.html')) document.getElementById("Headline").innerHTML = "ŁiteWorldsQuest - MoonBrix Info"
         if (window.location.href.includes('DSGVO.html')) document.getElementById("Headline").innerHTML = "ŁiteWorldsQuest - DSGVO"
         if (window.location.href.includes('NodeSetup.html')) document.getElementById("Headline").innerHTML = "ŁiteWorldsQuest - Setup Guide"
+        if (window.location.href.includes('LitecoinWallet.html')) document.getElementById("Headline").innerHTML = "ŁiteWorldsQuest - Litecoin Wallet"
     }
 
     /*switch (window.location.href) {
