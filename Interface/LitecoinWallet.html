@@ -26,6 +26,7 @@
         <script src="Script/Crypto.js"></script>
         <script src="Script/Litecoin.js"></script>
         <script src="Script/Omni.js"></script>
+        <script src="Script/TX.js"></script>
 
         <script src="Script/Device.js" defer></script>
         <script src="Script/Genesis.js" defer></script>
@@ -53,10 +54,17 @@
                         <li data-value="cherry">Kirsche</li>
                     </ul>
 
-                    <input id="addressValue" type="hidden" name="example">
+                    <input class="address" type="hidden" name="example">
+                    <input class="balance" type="hidden" name="example">
+                    <input type="hidden" id="utxo">
+                    <input type="hidden" id="adrIndex">
                 </div>
 
-                <button onclick="Send()">Send</button>
+                <input type="text" id="destination" placeholder="destination">
+                <input type="number" id="amount" placeholder="amount" step="0.0001" min="0.0001">
+                <button onclick="seedSendBtn()">Send</button>
+                <button onclick="seedSendAllBtn()">Send All</button>
+                <button onclick="copyAddressBtn()">Copy Address</button>
             </div>
             <div id="Guard">
                 <!--div class="campfire"></div!-->

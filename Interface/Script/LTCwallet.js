@@ -1,3 +1,9 @@
+const LTC = new Litecoin
+const OMNI = new Omnilayer
+const UTXO = new Array
+
+var Addresses, Balance, Index
+
 Init()
 
 function Init() {
@@ -203,14 +209,11 @@ function addSeed() {
 }
 
 async function GetLitecoin(Meta, password) {
-    const LTC = new Litecoin
-    const OMNI = new Omnilayer
-
     if (Meta.Seeds.length > 0) {
         const entrophy = await loadEncryptedSeed(Meta, password)
-        const Addresses = LTC.AddressesFromSeeds(entrophy)
+        Addresses = LTC.AddressesFromSeed(entrophy)
 
-        const UTXO = new Array
+        //const UTXO = new Array
         UTXO.Legacy = await LTC.UTXO(Addresses.Legacy)
         UTXO.Omni = await LTC.UTXO(Addresses.Omni)
 
@@ -233,7 +236,9 @@ async function GetLitecoin(Meta, password) {
 
             const adr = document.createElement("li")
             adr.innerText = balance + " LTC - " + address
-            adr.dataset.value = address
+
+            adr.dataset.balance = balance
+            adr.dataset.index = a
 
             addressList.appendChild(adr)
         }
@@ -243,19 +248,31 @@ async function GetLitecoin(Meta, password) {
     }
 }
 
-function Send() {
-    const origin = document.getElementById("addressValue").value
-    console.log(origin)
+function seedSendBtn() {
+    const TXB = new TX
+    const tx = TXB.SeedSend(Addresses.Omni[Index], 
+        document.getElementById("destination").value,
+        document.getElementById("amount").value * 100000000,
+        UTXO.Omni[Index],
+        0, LTC.network)
+
+    console.log(tx.buildIncomplete().toHex())
 }
 
+function seedSendAllBtn() {
+    const TXB = new TX
+    TXB.SeedSendAll(document.getElementById("destination").value, Balance)
+}
 
+function copyAddressBtn() {
+    navigator.clipboard.writeText(Addresses.Omni[Index])
+}
 
 function refreshSelects() {
     document.querySelectorAll(".custom-select").forEach(select => {
         const trigger = select.querySelector(".select-trigger");
         const valueEl = select.querySelector(".select-value");
         const options = select.querySelector(".select-options");
-        const hidden = select.querySelector("input");
         const items = [...options.children];
 
         function close() {
@@ -274,8 +291,10 @@ function refreshSelects() {
             items.forEach(i => i.classList.remove("selected"));
             item.classList.add("selected");
 
-            valueEl.textContent = item.textContent;
-            hidden.value = item.dataset.value;
+            valueEl.textContent = item.textContent
+
+            Balance = item.dataset.balance
+            Index = item.dataset.index
 
             close();
             });

@@ -102,7 +102,7 @@ class Litecoin {
         return s;
     }
 
-    AddressesFromSeeds(entrophy) {
+    AddressesFromSeed(entrophy) {
         const mnemonic = bip39.entropyToMnemonic(entrophy)
         const seed = bip39.mnemonicToSeedSync(mnemonic)
         this.root = bitcoin.bip32.fromSeed(seed, this.network)
