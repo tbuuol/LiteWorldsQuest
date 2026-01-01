@@ -48,7 +48,7 @@ header::after {
     font-size: clamp(3dvh, 4vw, 6dvh);
     font-weight: bold;
     font-family: monospace;
-    background: linear-gradient(90deg, #00ffff, #00ff00, #ffff00, #ff69b4, #00ffff);
+    background: linear-gradient(90deg, #f7931a, #345D9D, #cb9800, #33ff00, #870087, #f7931a);
     -webkit-background-clip: text; /* Hintergrund nur im Textbereich anwenden */
     background-clip: text; /* Für den Farbverlauf im Text */
     color: transparent; /* Textfarbe transparent, damit der Verlauf sichtbar wird */

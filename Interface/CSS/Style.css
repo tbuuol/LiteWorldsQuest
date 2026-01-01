@@ -91,17 +91,21 @@ article:hover {
         rgba(255, 0, 150, 0.05)
     );
     box-shadow: 
-    0 0 15px rgba(0, 255, 255, 0.75),
+    0 0 10px gold, 
+    0 0 15px silver, 
+    0 0 20px #33ff00, 
+    0 0 25px #870087;
+    /*0 0 15px rgba(0, 255, 255, 0.75),
     0 0 20px rgba(0, 255, 0, 0.7),
     0 0 25px rgba(255, 255, 0, 0.65),
-    0 0 30px rgba(255, 0, 150, 0.6);
+    0 0 30px rgba(255, 0, 150, 0.6);*/
                 
     
     /* Verlauf nur für den linken und rechten Rand */
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
     background-clip: padding-box;
-    border-image: linear-gradient(290deg, #00ffff, #00ff00, #ffff00, #ff69b4) 0.5;
+    border-image: linear-gradient(290deg, gold, silver, #33ff00, #870087) 0.5;
 }
 
 

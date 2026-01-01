@@ -1,7 +1,7 @@
 
 article h1 {
     font-weight: 600; /* Dicke der Schrift */
-    background: linear-gradient(145deg, #ffff00, #00ffff, #ff69b4, #00ff00); /* Farbverlauf für den Text */
+    background: linear-gradient(145deg, #f7931a, #345D9D, #cb9800, #33ff00, #870087, #f7931a); /* Farbverlauf für den Text */
     -webkit-background-clip: text; /* Damit der Verlauf nur auf den Text angewendet wird */
     background-clip: text; /* Für den Farbverlauf im Text */
     color: transparent; /* Textfarbe transparent, damit der Verlauf sichtbar wird */
@@ -26,7 +26,7 @@ article h2 {
 
 article h3 {
     text-align: center;
-    background: linear-gradient(90deg, #00ffff, #00ff00, #ffff00, #ff69b4, #00ffff);
+    background: linear-gradient(90deg, #f7931a, #345D9D, #cb9800, #33ff00, #870087, #f7931a);
     /*background: linear-gradient(137deg, darkorange, dodgerblue, darkmagenta, dodgerblue, darkorange);*/
     -webkit-background-clip: text;
     background-clip: text;
