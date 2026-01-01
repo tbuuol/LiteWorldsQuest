@@ -173,9 +173,6 @@ function addSeed() {
         }
 
         const entropy = hexToUint8Array(bip39.mnemonicToEntropy(seed.value))
-
-        //console.log(entropy, password.value)
-
         saveEncryptedSeed("Litecoin", entropy, password.value)
         LoginBG.remove()
     }
