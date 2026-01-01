@@ -1,6 +1,6 @@
-function getEntrophy() {
-    const entropy = new Uint8Array(16)
-    return crypto.getRandomValues(entropy)
+function getEntropy() {
+  const entropy = new Uint8Array(16)
+  return crypto.getRandomValues(entropy)
 }
 
 

@@ -18,6 +18,7 @@
         <link id="HeaderStyle" rel="stylesheet" href="CSS/Header.css">
         <link rel="stylesheet" href="CSS/Guard.css">
         <link rel="stylesheet" href="CSS/Wallet.css">
+        <link rel="stylesheet" href="CSS/customSelect.css">
 
         <script src="Script/bip39.js"></script>
         <script src="Script/bitcoinjs-lib.js"></script>
@@ -37,6 +38,25 @@
         <main>
             <div style="border: 1px solid white ;">
                 <button onclick="addSeed()">Add Seed</button>
+            </div>
+
+            <div style="border: 1px solid white;">
+                <div class="custom-select" data-name="example">
+                    <button type="button" class="select-trigger" aria-expanded="false">
+                        <span class="select-value">Bitte wählen</span>
+                        <span class="select-arrow">▾</span>
+                    </button>
+
+                    <ul id="Addresses" class="select-options" tabindex="-1">
+                        <li data-value="apple">Apfel</li>
+                        <li data-value="banana">Banane</li>
+                        <li data-value="cherry">Kirsche</li>
+                    </ul>
+
+                    <input id="addressValue" type="hidden" name="example">
+                </div>
+
+                <button onclick="Send()">Send</button>
             </div>
             <div id="Guard">
                 <!--div class="campfire"></div!-->

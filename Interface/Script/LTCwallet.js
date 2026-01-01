@@ -183,7 +183,7 @@ function addSeed() {
     const getSeed_btn = document.createElement("button")
     getSeed_btn.innerText = "Get Seed"
     getSeed_btn.onclick = function() {
-        const entropy = getEntrophy()
+        const entropy = getEntropy()
         //console.log(entropy)
         seed.value = bip39.entropyToMnemonic(entropy)
     }
@@ -191,7 +191,7 @@ function addSeed() {
     const cancel_btn = document.createElement("button")
     cancel_btn.innerText = "Cancel"
     cancel_btn.onclick = function() {
-        div.remove()
+        LoginBG.remove()
     }
 
     div.appendChild(info)
@@ -218,5 +218,72 @@ async function GetLitecoin(Meta, password) {
         UTXO.Omni = await LTC.UTXO(Addresses.Omni)
 
         console.log(Addresses, UTXO)
+
+        const addressList = document.getElementById("Addresses")
+        console.log(addressList.innerHTML)
+        addressList.innerHTML = ""
+
+        for (let a = 0; a < Addresses.Omni.length; a++) {
+            const address = Addresses.Omni[a]
+            let balance = 0
+            
+            for (let b = 0; b < UTXO.Omni[a].length; b++) {
+                const utxo = UTXO.Omni[a][b]
+                balance += utxo.value
+            }
+
+            balance /= 100000000
+
+            const adr = document.createElement("li")
+            adr.innerText = balance + " LTC - " + address
+            adr.dataset.value = address
+
+            addressList.appendChild(adr)
+        }
+
+        
+        refreshSelects()
     }
+}
+
+function Send() {
+    const origin = document.getElementById("addressValue").value
+    console.log(origin)
+}
+
+
+
+function refreshSelects() {
+    document.querySelectorAll(".custom-select").forEach(select => {
+        const trigger = select.querySelector(".select-trigger");
+        const valueEl = select.querySelector(".select-value");
+        const options = select.querySelector(".select-options");
+        const hidden = select.querySelector("input");
+        const items = [...options.children];
+
+        function close() {
+            select.classList.remove("open");
+            trigger.setAttribute("aria-expanded", "false");
+        }
+
+        trigger.addEventListener("click", e => {
+            e.stopPropagation();
+            const open = select.classList.toggle("open");
+            trigger.setAttribute("aria-expanded", open);
+        });
+
+        items.forEach(item => {
+            item.addEventListener("click", () => {
+            items.forEach(i => i.classList.remove("selected"));
+            item.classList.add("selected");
+
+            valueEl.textContent = item.textContent;
+            hidden.value = item.dataset.value;
+
+            close();
+            });
+        });
+
+        document.addEventListener("click", close);
+    });   
 }
