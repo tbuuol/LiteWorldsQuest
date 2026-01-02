@@ -208,7 +208,62 @@ function addSeed() {
     div.appendChild(cancel_btn)
 }
 
+function addKey() {
+    const LoginBG = document.createElement("div")
+    LoginBG.classList.add("LoginBG")
+    document.body.children[1].appendChild(LoginBG)
+
+    const div = document.createElement("div")
+    div.classList.add("Login")
+    LoginBG.appendChild(div)
+
+    const info = document.createElement("h1")
+    info.innerText = "Add private Key"
+
+    const WIF = document.createElement("textarea")
+    WIF.classList.add("Seed")
+    WIF.placeholder = "Enter your Key here"
+
+    const password = document.createElement("input")
+    password.placeholder = "password"
+    password.type = "password"
+
+    const validate_btn = document.createElement("button")
+    validate_btn.innerText = "Continue"
+    validate_btn.onclick = async function() {
+        const Meta = getMeta()
+
+        if (Meta.Password != await SHA256(password.value)) {
+            alert("Password wrong")
+            throw "wrong Password"
+        }
+
+        saveEncryptedKey("Litecoin", LTC.wifToUint8(WIF.value), password.value)
+        LoginBG.remove()
+    }
+
+    const cancel_btn = document.createElement("button")
+    cancel_btn.innerText = "Cancel"
+    cancel_btn.onclick = function() {
+        LoginBG.remove()
+    }
+
+    div.appendChild(info)
+    div.appendChild(WIF)
+    div.appendChild(document.createElement("br"))
+    div.appendChild(password)
+    div.appendChild(document.createElement("br"))
+    div.appendChild(document.createElement("br"))
+    div.appendChild(validate_btn)
+    div.appendChild(cancel_btn)
+}
+
 async function GetLitecoin(Meta, password) {
+    const refreshBtn = document.getElementById("refreshWallet")
+    refreshBtn.onclick = function() {
+        GetLitecoin(Meta, password)
+    }
+    
     if (Meta.Seeds.length > 0) {
         const entrophy = await loadEncryptedSeed(Meta, password)
         Addresses = LTC.AddressesFromSeed(entrophy)
@@ -219,12 +274,7 @@ async function GetLitecoin(Meta, password) {
 
         console.log(Addresses, UTXO)
 
-        const refreshBtn = document.getElementById("refreshWallet")
-        refreshBtn.onclick = function() {
-            GetLitecoin(Meta, password)
-        }
-
-        const addressList = document.getElementById("Addresses")
+        const addressList = document.getElementById("SeedAddresses")
         console.log(addressList.innerHTML)
         addressList.innerHTML = ""
 
@@ -247,10 +297,50 @@ async function GetLitecoin(Meta, password) {
 
             addressList.appendChild(adr)
         }
-
-        
-        refreshSelects()
     }
+
+    if (Meta.Keys.length > 0) {
+        const pkey = await loadEncryptedKey(Meta, password)
+        const wif = new Array
+        for (let a = 0; a < pkey.length; a++) {
+            wif[a] = LTC.uint8ToWIF(pkey[a])
+            
+        }
+
+        const Addresses = LTC.AddressesFromWIF(wif)
+        
+        const UTXO = new Array
+        UTXO.Legacy = await LTC.UTXO(Addresses.Legacy)
+        UTXO.Omni = await LTC.UTXO(Addresses.Omni)
+
+        console.log(Addresses)
+
+        const addressList = document.getElementById("PKAddresses")
+        console.log(addressList.innerHTML)
+        addressList.innerHTML = ""
+
+        for (let a = 0; a < Addresses.Omni.length; a++) {
+            const address = Addresses.Omni[a]
+            let balance = 0
+            
+            for (let b = 0; b < UTXO.Omni[a].length; b++) {
+                const utxo = UTXO.Omni[a][b]
+                balance += utxo.value
+            }
+
+            balance /= 100000000
+
+            const adr = document.createElement("li")
+            adr.innerText = balance.toFixed(8) + " LTC - " + address
+
+            adr.dataset.balance = balance
+            adr.dataset.index = a
+
+            addressList.appendChild(adr)
+        }
+    }
+
+    refreshWallets()
 }
 
 function seedSendBtn() {
@@ -282,7 +372,22 @@ function copyAddressBtn() {
     }, 1337);
 }
 
-function refreshSelects() {
+
+function switchWallet() {
+    const SeedWallet = document.getElementById("SeedWallet")
+    const PKWallet = document.getElementById("PKWallet")
+    console.log(SeedWallet.style.display)
+
+    if (SeedWallet.style.display == "inline-block") {
+        SeedWallet.style.display = "none"
+        PKWallet.style.display = "inline-block"
+    } else {
+        SeedWallet.style.display = "inline-block"
+        PKWallet.style.display = "none"
+    }
+}
+
+function refreshWallets() {
     document.querySelectorAll(".custom-select").forEach(select => {
         const trigger = select.querySelector(".select-trigger");
         const valueEl = select.querySelector(".select-value");
@@ -318,7 +423,7 @@ function refreshSelects() {
             close();
             });
         });
-        items[0].click()
+        if (items.length > 0) items[0].click()
 
         document.addEventListener("click", close);
     });   

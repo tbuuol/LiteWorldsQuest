@@ -13,18 +13,17 @@ async function saveEncryptedSeed(coin, seed, password) {
   setMeta(Meta)
 }
 
-async function saveEncryptedKey(pkey, password) {
-  const encrypted = await encryptAES(pkey, password)
+async function saveEncryptedKey(coin, pkey, password) {
   const Meta = getMeta()
-  Meta.Keys.push(encrypted)
-
-  //console.log(Meta)
+  
+  const encrypted = await encryptAES(Meta[coin], pkey, password)
+  Meta[coin].Keys.push(encrypted)
 
   setMeta(Meta)
 }
 
 async function loadEncryptedSeed(Meta, password) {
-  //const Meta = getMeta()
+  const array = new Array
 
   if (Meta.Seeds.length > 0) {
     const encrypted = new Uint8Array(Object.values(Meta.Seeds[0]))
@@ -32,13 +31,12 @@ async function loadEncryptedSeed(Meta, password) {
   }
 }
 
-async function loadEncryptedKey(password) {
-  const Meta = getMeta()
+async function loadEncryptedKey(Meta, password) {
   const array = new Array
 
   for (let a = 0; a < Meta.Keys.length; a++) {
     const encrypted = new Uint8Array(Object.values(Meta.Keys[a]))
-    const decrypted = await decryptAES(encrypted, password)
+    const decrypted = await decryptAES(Meta, encrypted, password)
     array.push(decrypted)
   }
   

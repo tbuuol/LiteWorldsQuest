@@ -38,26 +38,28 @@
 
         <main>
             <div style="border: 1px solid white ;">
-                <button id="refreshWallet" style="width: calc(33.3dvw - 4px);">Refresh</button>
-                <button onclick="addSeed()" style="width: calc(33.3dvw - 4px);">Add Seed</button>
-                <button onclick="addKey()" style="width: calc(33.3dvw - 4px);">Add Private Key</button>
+                <button id="refreshWallet" style="width: calc(25dvw - 4px);">Refresh</button>
+                <button onclick="addSeed()" style="width: calc(25dvw - 4px);">Add Seed</button>
+                <button onclick="addKey()" style="width: calc(25dvw - 4px);">Add Private Key</button>
+                <button onclick="switchWallet()" style="width: calc(25dvw - 4px);">Switch Wallet</button>
             </div>
 
-            <div style="border: 1px solid white;">
-                <div class="custom-select" data-name="example">
+            <div id="SeedWallet" style="border: 1px solid white; display: inline-block;">
+                <h3 style="color: #0f0;">Seed Wallet</h3>
+                <div class="custom-select">
                     <button type="button" class="select-trigger" aria-expanded="false">
                         <span class="select-value">Calculate Addresses</span>
                         <span class="select-arrow">▾</span>
                     </button>
 
-                    <ul id="Addresses" class="select-options" tabindex="-1">
+                    <ul id="SeedAddresses" class="select-options">
                         <li data-value="apple">Apfel</li>
                         <li data-value="banana">Banane</li>
                         <li data-value="cherry">Kirsche</li>
                     </ul>
 
-                    <input class="address" type="hidden" name="example">
-                    <input class="balance" type="hidden" name="example">
+                    <input class="address" type="hidden">
+                    <input class="balance" type="hidden">
                     <input type="hidden" id="utxo">
                     <input type="hidden" id="adrIndex">
                 </div>
@@ -68,6 +70,32 @@
                 <button onclick="seedSendAllBtn()" style="width: calc(33.3dvw - 4px);">Send All</button>
                 <button onclick="copyAddressBtn()" id="copyBtn" style="width: calc(33.3dvw - 4px);">Copy Address</button>
             </div>
+
+            <div id="PKWallet" style="border: 1px solid white; display: none;">
+                <h3 style="color: #0f0;">PrivateKey Wallet</h3>
+                <div class="custom-select">
+                    <button type="button" class="select-trigger" aria-expanded="false">
+                        <span class="select-value">Calculate Addresses</span>
+                        <span class="select-arrow">▾</span>
+                    </button>
+
+                    <ul id="PKAddresses" class="select-options">
+
+                    </ul>
+
+                    <input class="address" type="hidden">
+                    <input class="balance" type="hidden">
+                    <input type="hidden" id="PKutxo">
+                    <input type="hidden" id="PKadrIndex">
+                </div>
+
+                <input type="text" id="PKdestination" placeholder="destination" style="width: calc(50dvw - 4px);">
+                <input type="number" id="PKamount" placeholder="amount" step="0.0001" min="0.0001" style="width: calc(50dvw - 4px);">
+                <button onclick="pkSendBtn()" style="width: calc(33.3dvw - 4px);">Send</button>
+                <button onclick="pkSendAllBtn()" style="width: calc(33.3dvw - 4px);">Send All</button>
+                <button onclick="pkCopyAddressBtn()" id="PKcopyBtn" style="width: calc(33.3dvw - 4px);">Copy Address</button>
+            </div>
+
             <div id="Guard">
                 <!--div class="campfire"></div!-->
             </div>
