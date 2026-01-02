@@ -188,4 +188,105 @@ class Litecoin {
         const e = await Promise.all(p)
         return e
     }
+
+
+    SeedSend(origin, destination, amount, utxos, fee) {
+        console.log(origin, destination, amount, utxos, fee)
+
+        const txb = new bitcoin.TransactionBuilder(this.network)
+
+        if (amount < 5400) {
+            alert('dust error on sending amount')
+            return
+        }
+
+        let totalInput = 0
+        for (let i = 0; i < utxos.length; i++) {
+            const utxo = utxos[i]
+            txb.addInput(utxo.txid, utxo.vout)
+            totalInput += utxo.value
+        }
+
+        if (totalInput < amount + fee) {
+            alert('Insufficient funds')
+            return
+        }
+
+        const change = totalInput - amount - fee;
+        if (change < 5400) {
+            alert('dust error on change')
+            return
+        } else {
+            txb.addOutput(origin, change)
+        }
+        txb.addOutput(destination, amount)
+
+        return txb
+    }
+
+    SeedSendAll(destination, utxos, fee) {
+        const txb = new bitcoin.TransactionBuilder(this.network)
+
+        let totalInput = 0
+        for (let i = 0; i < utxos.length; i++) {
+            const utxo = utxos[i]
+            txb.addInput(utxo.txid, utxo.vout)
+            totalInput += utxo.value
+        }
+
+        if (totalInput - fee < 5400) {
+            alert('Insufficient funds - dust error')
+            return
+        }
+        txb.addOutput(destination, totalInput - fee)
+
+        return txb
+    }
+
+    SeedSign(unsignedHex, addrType, addrIndex, utxos) {
+        const tx = bitcoin.Transaction.fromHex(unsignedHex)
+        const txb = bitcoin.TransactionBuilder.fromTransaction(tx, this.network)
+        const utxoValuesArray = utxos.map(u => u.value)
+        const child = this.root.derivePath("m/"+addrType+"'/2'/0'/0/" +addrIndex)
+        let addrData
+
+        if (addrType == 44) {
+        addrData = bitcoin.payments.p2pkh({ 
+            pubkey: child.publicKey,
+            network: this.network
+        })
+
+        for (let i = 0; i < tx.ins.length; i++) {
+            txb.sign(i, child)
+        }
+        }
+
+        if (addrType == 49) {
+        addrData = bitcoin.payments.p2sh({
+            redeem: bitcoin.payments.p2wpkh({
+            pubkey: child.publicKey,
+            network: this.network }),
+            network: this.network
+        })
+
+        for (let i = 0; i < tx.ins.length; i++) {
+            txb.sign(i, child, addrData.redeem.output, null, utxoValuesArray[i])
+        }
+        }
+        
+        return txb.build()
+    }
+
+      async submitTX(Hex) {
+        const p = await fetch("https://litecoinspace.org/api/tx", {
+        method: "POST",
+        body: Hex
+        })
+        const r = await p.text()
+        if (r.substring(0,29) == "sendrawtransaction RPC error:") alert("TX Error: " + r)
+        
+        if (confirm("show TX in Explorer?")) window.open("https://litecoinspace.org/tx/" + r, "_blank", "noopener,noreferrer")
+
+        return r
+    }
 }

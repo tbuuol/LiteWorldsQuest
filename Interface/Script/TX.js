@@ -3,41 +3,69 @@ class TX {
 
     }
 
-    SeedSend(origin, destination, amount, utxos, fee, network) {
-        console.log(origin, destination, amount, utxos, fee, network)
+    SendSeed(LTC, Addresses, UTXO, adrType, Index, fee = 1) {
+        const origin = Addresses[Index]
+        const destination = document.getElementById("destination").value
+        const amount = document.getElementById("amount").value * 100000000
+        const utxos = UTXO[Index]
 
-        const txb = new bitcoin.TransactionBuilder(network)
+        let ustx = LTC.SeedSend(origin, destination, amount, utxos, 0)
+        let stx = LTC.SeedSign(ustx.buildIncomplete().toHex(), adrType, Index, utxos)
 
-        if (amount < 5400) {
-            alert('dust error on sending amount')
-            return
-        }
+        ustx = LTC.SeedSend(origin, destination, amount, utxos, stx.virtualSize() * fee +1)
+        stx = LTC.SeedSign(ustx.buildIncomplete().toHex(), adrType, Index, utxos)
 
-        let totalInput = 0
-        for (let i = 0; i < utxos.length; i++) {
-            const utxo = utxos[i]
-            txb.addInput(utxo.txid, utxo.vout)
-            totalInput += utxo.value
-        }
+        console.log(stx.toHex(), stx.virtualSize())
 
-        if (totalInput < amount + fee) {
-            alert('Insufficient funds')
-            return
-        }
-
-        const change = totalInput - amount - fee;
-        if (change < 5400) {
-            alert('dust error on change')
-            return
-        } else {
-            txb.addOutput(origin, change)
-        }
-        txb.addOutput(destination, amount)
-
-        return txb
+        return stx.toHex()
     }
 
-    SeedSendAll(destination, amount) {
-        console.log(destination, amount)
+    SendAllSeed(LTC, UTXO, adrType, Index, fee = 1) {
+        const utxos = UTXO[Index]
+        const destination = document.getElementById("destination").value
+
+        let ustx = LTC.SeedSendAll(destination, utxos, 0)
+        let stx = LTC.SeedSign(ustx.buildIncomplete().toHex(), adrType, Index, utxos)
+
+        ustx = LTC.SeedSendAll(destination, utxos, stx.virtualSize() * fee +1)
+        stx = LTC.SeedSign(ustx.buildIncomplete().toHex(), adrType, Index, utxos)
+
+        console.log(stx.toHex(), stx.virtualSize())
+
+        return stx.toHex()
+    }
+
+    SeedSign(unsignedHex, addrType, addrIndex, utxos) {
+        const tx = bitcoin.Transaction.fromHex(unsignedHex)
+        const txb = bitcoin.TransactionBuilder.fromTransaction(tx, this.network)
+        const utxoValuesArray = utxos.map(u => u.value)
+        const child = this.root.derivePath("m/"+addrType+"'/2'/0'/0/" +addrIndex)
+        let addrData
+
+        if (addrType == 44) {
+        addrData = bitcoin.payments.p2pkh({ 
+            pubkey: child.publicKey,
+            network: this.network
+        })
+
+        for (let i = 0; i < tx.ins.length; i++) {
+            txb.sign(i, child)
+        }
+        }
+
+        if (addrType == 49) {
+        addrData = bitcoin.payments.p2sh({
+            redeem: bitcoin.payments.p2wpkh({
+            pubkey: child.publicKey,
+            network: this.network }),
+            network: this.network
+        })
+
+        for (let i = 0; i < tx.ins.length; i++) {
+            txb.sign(i, child, addrData.redeem.output, null, utxoValuesArray[i])
+        }
+        }
+        
+        return txb.build()
     }
 }

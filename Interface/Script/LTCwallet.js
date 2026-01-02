@@ -219,6 +219,11 @@ async function GetLitecoin(Meta, password) {
 
         console.log(Addresses, UTXO)
 
+        const refreshBtn = document.getElementById("refreshWallet")
+        refreshBtn.onclick = function() {
+            GetLitecoin(Meta, password)
+        }
+
         const addressList = document.getElementById("Addresses")
         console.log(addressList.innerHTML)
         addressList.innerHTML = ""
@@ -250,18 +255,22 @@ async function GetLitecoin(Meta, password) {
 
 function seedSendBtn() {
     const TXB = new TX
-    const tx = TXB.SeedSend(Addresses.Omni[Index], 
-        document.getElementById("destination").value,
-        document.getElementById("amount").value * 100000000,
-        UTXO.Omni[Index],
-        0, LTC.network)
+    const tx = TXB.SendSeed(LTC, Addresses.Omni, UTXO.Omni, 49, Index)
 
-    console.log(tx.buildIncomplete().toHex())
+    if (confirm("Submit TX?")) {
+        LTC.submitTX(tx)
+        document.getElementById("refreshWallet").click()
+    }
 }
 
 function seedSendAllBtn() {
     const TXB = new TX
-    TXB.SeedSendAll(document.getElementById("destination").value, Balance)
+    const tx = TXB.SendAllSeed(LTC, UTXO.Omni, 49, Index)
+
+    if (confirm("Submit TX?")) {
+        LTC.submitTX(tx)
+        document.getElementById("refreshWallet").click()
+    }
 }
 
 function copyAddressBtn() {
@@ -280,11 +289,16 @@ function refreshSelects() {
             trigger.setAttribute("aria-expanded", "false");
         }
 
+        if (!trigger._clickBound) {
+        trigger._clickBound = true;
+
         trigger.addEventListener("click", e => {
             e.stopPropagation();
             const open = select.classList.toggle("open");
             trigger.setAttribute("aria-expanded", open);
         });
+        }
+
 
         items.forEach(item => {
             item.addEventListener("click", () => {
@@ -299,6 +313,8 @@ function refreshSelects() {
             close();
             });
         });
+
+        valueEl.textContent = items[0].textContent
 
         document.addEventListener("click", close);
     });   
