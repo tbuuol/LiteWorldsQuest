@@ -240,7 +240,7 @@ async function GetLitecoin(Meta, password) {
             balance /= 100000000
 
             const adr = document.createElement("li")
-            adr.innerText = balance + " LTC - " + address
+            adr.innerText = balance.toFixed(8) + " LTC - " + address
 
             adr.dataset.balance = balance
             adr.dataset.index = a
@@ -275,6 +275,11 @@ function seedSendAllBtn() {
 
 function copyAddressBtn() {
     navigator.clipboard.writeText(Addresses.Omni[Index])
+    document.getElementById("copyBtn").innerText = "copied!"
+
+    setTimeout(() => {
+        document.getElementById("copyBtn").innerText = "Copy Address"
+    }, 1337);
 }
 
 function refreshSelects() {
@@ -313,8 +318,7 @@ function refreshSelects() {
             close();
             });
         });
-
-        valueEl.textContent = items[0].textContent
+        items[0].click()
 
         document.addEventListener("click", close);
     });   

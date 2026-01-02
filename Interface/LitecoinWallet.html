@@ -38,8 +38,9 @@
 
         <main>
             <div style="border: 1px solid white ;">
-                <button id="refreshWallet">Refresh</button>
-                <button onclick="addSeed()">Add Seed</button>
+                <button id="refreshWallet" style="width: calc(33.3dvw - 4px);">Refresh</button>
+                <button onclick="addSeed()" style="width: calc(33.3dvw - 4px);">Add Seed</button>
+                <button onclick="addKey()" style="width: calc(33.3dvw - 4px);">Add Private Key</button>
             </div>
 
             <div style="border: 1px solid white;">
@@ -61,11 +62,11 @@
                     <input type="hidden" id="adrIndex">
                 </div>
 
-                <input type="text" id="destination" placeholder="destination">
-                <input type="number" id="amount" placeholder="amount" step="0.0001" min="0.0001">
-                <button onclick="seedSendBtn()">Send</button>
-                <button onclick="seedSendAllBtn()">Send All</button>
-                <button onclick="copyAddressBtn()">Copy Address</button>
+                <input type="text" id="destination" placeholder="destination" style="width: calc(50dvw - 4px);">
+                <input type="number" id="amount" placeholder="amount" step="0.0001" min="0.0001" style="width: calc(50dvw - 4px);">
+                <button onclick="seedSendBtn()" style="width: calc(33.3dvw - 4px);">Send</button>
+                <button onclick="seedSendAllBtn()" style="width: calc(33.3dvw - 4px);">Send All</button>
+                <button onclick="copyAddressBtn()" id="copyBtn" style="width: calc(33.3dvw - 4px);">Copy Address</button>
             </div>
             <div id="Guard">
                 <!--div class="campfire"></div!-->

@@ -9,7 +9,7 @@
   all: unset;                 /* 💣 reset ALLES */
   box-sizing: border-box;
 
-  width: 100%;
+  width: calc(100dvw - 4px);
   padding: 12px;
   background: #111;
   color: #0f0;
@@ -94,6 +94,11 @@ button {
 
 button:focus-visible {
   box-shadow: 0 0 0 2px #0f05;
+}
+
+button:active {
+  color: #111;
+  background: #0f0;
 }
 
 
