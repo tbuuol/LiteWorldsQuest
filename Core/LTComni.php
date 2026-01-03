@@ -18,7 +18,7 @@ switch ($_GET['method']) {
         break;
 
     case 'getproperty':
-        if (!isset($_GET["id"])) Out(["error" => "&id missing"]);
+        if (!isset($_GET["id"])) Out(Node('omni_listproperties', []));
         Out(Node('omni_getproperty', [(int)$_GET["id"]]));
         break;
 

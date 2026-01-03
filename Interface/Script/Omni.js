@@ -4,7 +4,9 @@ class Omnilayer {
     }
 
     async getProperty(id) {
-        const p = await fetch(this.URL + "getproperty&id=" + id)
+        let p
+        if (id == "") p = await fetch(this.URL + "getproperty")
+        else p = await fetch(this.URL + "getproperty&id=" + id)
         const r = await p.json()
         return r
     }
@@ -13,6 +15,18 @@ class Omnilayer {
         const p = await fetch(this.URL + "getbalforadr&adr=" + address)
         const r = await p.json()
         return r
+    }
+
+    async getBalanceByAddresses(addresses) {
+      const urls = new Array
+
+      for (let a = 0; a < addresses.length; a++) {
+        urls.push(this.URL + "getbalforadr&adr=" + addresses[a])
+      }
+
+      const p = urls.map(u => fetch(u).then(r => r.json()))
+      const e = await Promise.all(p)
+      return e
     }
 
     async getNFTs(address) {

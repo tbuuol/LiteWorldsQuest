@@ -3,8 +3,9 @@ const OMNI = new Omnilayer
 const UTXO = new Array
 const UTXOpk = new Array
 
-var Addresses, Balance, Index
-var AddressesPK, BalancePK, IndexPK
+var Addresses, Balance, Index, oBal
+var AddressesPK, BalancePK, IndexPK, oBalPK
+var DEX
 
 Init()
 
@@ -327,11 +328,20 @@ async function GetLitecoin(Meta, password) {
             adr.dataset.balance = balance
             adr.dataset.index = a
 
-            addressList.appendChild(adr)
+            addressList.appendChild(adr)          
         }
     }
 
     refreshWallets()
+
+    oBal = await OMNI.getBalanceByAddresses(Addresses.Omni)
+    console.log(oBal[Index])
+
+    oBalPK = await OMNI.getBalanceByAddresses(AddressesPK.Omni)
+    console.log(oBalPK)
+
+    DEX = await OMNI.getDEX()
+    console.log(DEX)
 }
 
 function seedSendBtn() {
@@ -518,11 +528,13 @@ function refreshWallets() {
             Balance = item.dataset.balance
             Index = item.dataset.index
 
+            if (oBal != undefined && oBal.length > item.dataset.index) console.log(oBal[item.dataset.index])
+
             SeedClose()
         })
     })
 
-    if (SeedAddressList.length > 0) SeedAddressList[0].click()
+    if (SeedAddressList.length > 0 && SeedValue.innerText == "Calculate Addresses") SeedAddressList[0].click()
 
 
     

@@ -44,7 +44,7 @@
                 <button onclick="switchWallet()" style="width: calc(25dvw - 4px);">Switch Wallet</button>
             </div>
 
-            <div id="SeedWallet" style="border: 1px solid white; display: inline-block;">
+            <div id="SeedWallet" style="border: 1px solid white; display: inline-block; margin-top: 1rem;">
                 <h3 style="color: #0f0;">Seed Wallet</h3>
                 <div class="custom-select" id="SeedSelect">
                     <button type="button" class="select-trigger" aria-expanded="false">
@@ -69,7 +69,7 @@
                 <button onclick="copyAddressBtn()" id="copyBtn" style="width: calc(33.3dvw - 4px);">Copy Address</button>
             </div>
 
-            <div id="PKWallet" style="border: 1px solid white; display: none;">
+            <div id="PKWallet" style="border: 1px solid white; display: none; margin-top: 1rem;">
                 <h3 style="color: #0f0;">PrivateKey Wallet</h3>
                 <div class="custom-select" id="PKselect">
                     <button type="button" class="select-trigger" aria-expanded="false">
@@ -90,6 +90,26 @@
                 <button onclick="pkSendBtn()" style="width: calc(33.3dvw - 4px);">Send</button>
                 <button onclick="pkSendAllBtn()" style="width: calc(33.3dvw - 4px);">Send All</button>
                 <button onclick="pkCopyAddressBtn()" id="PKcopyBtn" style="width: calc(33.3dvw - 4px);">Copy Address</button>
+            </div>
+
+            <div id="Omni" style="border: 1px solid white; display: inline-block; margin-top: 1rem; width: 100dvw;">
+                <h3 style="color: #0f0;">Omni</h3>
+                    <div class="custom-select" id="Omniselect">
+                    <button type="button" class="select-trigger" aria-expanded="false">
+                        <span class="select-value">Loading Properties</span>
+                        <span class="select-arrow">▾</span>
+                    </button>
+
+                    <ul id="OmniList" class="select-options">
+                        <li data-value="Hello User">Nothing found</li>
+                    </ul>
+
+                    <input type="hidden" id="OmniID">
+                </div>
+            </div>
+
+            <div id="DEX" style="border: 1px solid white; display: inline-block; margin-top: 1rem; width: 100dvw;">
+                <h3 style="color: #0f0;">Dedicated Exchange</h3>
             </div>
 
             <div id="Guard">

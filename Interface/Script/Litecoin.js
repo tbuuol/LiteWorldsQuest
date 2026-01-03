@@ -191,8 +191,6 @@ class Litecoin {
 
 
     Send(origin, destination, amount, utxos, fee) {
-        console.log(origin, destination, amount, utxos, fee)
-
         const txb = new bitcoin.TransactionBuilder(this.network)
 
         if (amount < 5400) {
@@ -282,9 +280,6 @@ class Litecoin {
         const txb = bitcoin.TransactionBuilder.fromTransaction(tx, this.network)
         const utxoValuesArray = utxos.map(u => u.value)
         const keyPair = bitcoin.ECPair.fromWIF(wif, this.network)
-
-        //const keyPair = bitcoin.ECPair.fromPrivateKey(wif, { network: this.network })
-        console.log(keyPair)
 
         let addrData
 

@@ -43,7 +43,7 @@ header::after {
 /* Header Name Styling mit kontinuierlich fließendem Farbverlauf */
 #Headline {
     position: absolute;
-    left: 3.1415dvh;
+    left: 3.1415dvw;
     padding-top: 1.6dvh;
     font-size: clamp(3dvh, 4vw, 6dvh);
     font-weight: bold;

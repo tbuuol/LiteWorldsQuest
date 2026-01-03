@@ -2,7 +2,7 @@
 /* Header-Styles */
 header {
     width: 100dvw; /* Volle Breite */
-    height: 2.5rem; /* Feste Höhe */
+    height: 8dvh; /* Feste Höhe */
     background: #111; /* Dunkler Hintergrund */
     color: white;
     display: flex;
@@ -45,7 +45,7 @@ header::after {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    padding-top: 0.25rem;
+    padding-top: 1.6dvh;
     font-size: 1.37rem;
     font-weight: bold;
     font-family: monospace;

@@ -33,7 +33,7 @@ async function Header() {
         if (window.location.href.includes('MoonBrixInfo.html')) document.getElementById("Headline").innerHTML = "MoonBrix Info"
         if (window.location.href.includes('DSGVO.html')) document.getElementById("Headline").innerHTML = "DSGVO"
         if (window.location.href.includes('NodeSetup.html')) document.getElementById("Headline").innerHTML = "Setup Guide"
-        if (window.location.href.includes('LitecoinWallet.html')) document.getElementById("Headline").innerHTML = "Łitecoin Wallet"
+        if (window.location.href.includes('LitecoinWallet.html')) document.getElementById("Headline").innerHTML = "Łitecoin"
     } else {
         const response = await fetch("https://liteworlds.quest/Interface/Header.html")
         const result = await response.text()
