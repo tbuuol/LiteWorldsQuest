@@ -190,7 +190,7 @@ class Litecoin {
     }
 
 
-    SeedSend(origin, destination, amount, utxos, fee) {
+    Send(origin, destination, amount, utxos, fee) {
         console.log(origin, destination, amount, utxos, fee)
 
         const txb = new bitcoin.TransactionBuilder(this.network)
@@ -224,7 +224,7 @@ class Litecoin {
         return txb
     }
 
-    SeedSendAll(destination, utxos, fee) {
+    SendAll(destination, utxos, fee) {
         const txb = new bitcoin.TransactionBuilder(this.network)
 
         let totalInput = 0
@@ -243,7 +243,7 @@ class Litecoin {
         return txb
     }
 
-    SeedSign(unsignedHex, addrType, addrIndex, utxos) {
+    Sign(unsignedHex, addrType, addrIndex, utxos) {
         const tx = bitcoin.Transaction.fromHex(unsignedHex)
         const txb = bitcoin.TransactionBuilder.fromTransaction(tx, this.network)
         const utxoValuesArray = utxos.map(u => u.value)
@@ -277,7 +277,45 @@ class Litecoin {
         return txb.build()
     }
 
-      async submitTX(Hex) {
+    SignPK(unsignedHex, addrType, utxos, wif) {
+        const tx = bitcoin.Transaction.fromHex(unsignedHex)
+        const txb = bitcoin.TransactionBuilder.fromTransaction(tx, this.network)
+        const utxoValuesArray = utxos.map(u => u.value)
+        const keyPair = bitcoin.ECPair.fromWIF(wif, this.network)
+
+        //const keyPair = bitcoin.ECPair.fromPrivateKey(wif, { network: this.network })
+        console.log(keyPair)
+
+        let addrData
+
+        if (addrType == 44) {
+            addrData = bitcoin.payments.p2pkh({ 
+                pubkey: keyPair.publicKey,
+                network: this.network
+            })
+
+            for (let i = 0; i < tx.ins.length; i++) {
+                txb.sign(i, keyPair)
+            }
+        }
+
+        if (addrType == 49) {
+            addrData = bitcoin.payments.p2sh({
+                redeem: bitcoin.payments.p2wpkh({
+                pubkey: keyPair.publicKey,
+                network: this.network }),
+                network: this.network
+            })
+
+            for (let i = 0; i < tx.ins.length; i++) {
+                txb.sign(i, keyPair, addrData.redeem.output, null, utxoValuesArray[i])
+            }
+        }
+
+        return txb.build()
+    }
+
+    async submitTX(Hex) {
         const p = await fetch("https://litecoinspace.org/api/tx", {
         method: "POST",
         body: Hex

@@ -1,24 +1,16 @@
 const LTC = new Litecoin
 const OMNI = new Omnilayer
 const UTXO = new Array
+const UTXOpk = new Array
 
 var Addresses, Balance, Index
+var AddressesPK, BalancePK, IndexPK
 
 Init()
 
 function Init() {
-    //console.log(bitcoin, bip39)
-
-    //localStorage.clear()
-
-    let meta = getMeta()
-    console.log(meta)
-
-    if (meta == null) {
-        Setup()
-    } else {
-        Login()
-    }
+    if (getMeta() == null) Setup()
+    else Login()
 }
 
 function Setup() {
@@ -84,7 +76,6 @@ function Setup() {
                 }
             }
 
-            //console.log(meta)
             setMeta(meta)
             location.reload()
         }
@@ -131,8 +122,10 @@ function Login() {
     const reset_btn = document.createElement("button")
     reset_btn.innerText = "Reset Wallet"
     reset_btn.onclick = function() {
-        localStorage.clear()
-        location.reload()
+        if (confirm("Reset Wallet?")) {
+           localStorage.clear()
+            location.reload() 
+        }
     }
 
     div.appendChild(info)
@@ -179,15 +172,16 @@ function addSeed() {
         }
 
         const entropy = hexToUint8Array(bip39.mnemonicToEntropy(seed.value))
-        saveEncryptedSeed("Litecoin", entropy, password.value)
+        await saveEncryptedSeed("Litecoin", entropy, password.value)
         LoginBG.remove()
+
+        GetLitecoin(getMeta()["Litecoin"], password.value)
     }
 
     const getSeed_btn = document.createElement("button")
     getSeed_btn.innerText = "Get Seed"
     getSeed_btn.onclick = function() {
         const entropy = getEntropy()
-        //console.log(entropy)
         seed.value = bip39.entropyToMnemonic(entropy)
     }
 
@@ -238,8 +232,10 @@ function addKey() {
             throw "wrong Password"
         }
 
-        saveEncryptedKey("Litecoin", LTC.wifToUint8(WIF.value), password.value)
+        await saveEncryptedKey("Litecoin", LTC.wifToUint8(WIF.value), password.value)
         LoginBG.remove()
+
+        GetLitecoin(getMeta()["Litecoin"], password.value)
     }
 
     const cancel_btn = document.createElement("button")
@@ -263,6 +259,7 @@ async function GetLitecoin(Meta, password) {
     refreshBtn.onclick = function() {
         GetLitecoin(Meta, password)
     }
+
     
     if (Meta.Seeds.length > 0) {
         const entrophy = await loadEncryptedSeed(Meta, password)
@@ -272,10 +269,7 @@ async function GetLitecoin(Meta, password) {
         UTXO.Legacy = await LTC.UTXO(Addresses.Legacy)
         UTXO.Omni = await LTC.UTXO(Addresses.Omni)
 
-        console.log(Addresses, UTXO)
-
         const addressList = document.getElementById("SeedAddresses")
-        console.log(addressList.innerHTML)
         addressList.innerHTML = ""
 
         for (let a = 0; a < Addresses.Omni.length; a++) {
@@ -307,24 +301,21 @@ async function GetLitecoin(Meta, password) {
             
         }
 
-        const Addresses = LTC.AddressesFromWIF(wif)
+        AddressesPK = LTC.AddressesFromWIF(wif)
         
-        const UTXO = new Array
-        UTXO.Legacy = await LTC.UTXO(Addresses.Legacy)
-        UTXO.Omni = await LTC.UTXO(Addresses.Omni)
-
-        console.log(Addresses)
+        //const UTXO = new Array
+        UTXOpk.Legacy = await LTC.UTXO(AddressesPK.Legacy)
+        UTXOpk.Omni = await LTC.UTXO(AddressesPK.Omni)
 
         const addressList = document.getElementById("PKAddresses")
-        console.log(addressList.innerHTML)
         addressList.innerHTML = ""
 
-        for (let a = 0; a < Addresses.Omni.length; a++) {
-            const address = Addresses.Omni[a]
+        for (let a = 0; a < AddressesPK.Omni.length; a++) {
+            const address = AddressesPK.Omni[a]
             let balance = 0
             
-            for (let b = 0; b < UTXO.Omni[a].length; b++) {
-                const utxo = UTXO.Omni[a][b]
+            for (let b = 0; b < UTXOpk.Omni[a].length; b++) {
+                const utxo = UTXOpk.Omni[a][b]
                 balance += utxo.value
             }
 
@@ -373,10 +364,117 @@ function copyAddressBtn() {
 }
 
 
+function pkSendBtn() {
+    const Meta = getMeta()
+    let password
+
+    const div = document.createElement("div")
+    const input = document.createElement("input")
+    const confirm = document.createElement("button")
+    const cancel = document.createElement("button")
+
+    document.body.children[1].appendChild(div)
+    div.appendChild(input)
+    div.appendChild(confirm)
+    div.appendChild(cancel)
+
+    div.style.position = "absolute"
+    div.style.top = "50dvh"
+    div.style.left = "50dvw"
+    div.style.transform = "translate(-50%, -50%)"
+    div.style.background = "#222"
+
+    input.placeholder = "Enter Password"
+    input.type = "password"
+    
+    confirm.innerText = "Send"
+    confirm.onclick = async function() {
+        password = input.value
+
+        if (await SHA256(password) != Meta.Password) {
+            alert("password wrong!")
+        } else {
+            const TXB = new TX
+            const wif = await loadEncryptedKey(Meta["Litecoin"], password)
+
+    
+            const tx = TXB.SendPK(LTC, AddressesPK.Omni, UTXOpk.Omni, 49, IndexPK, wif)
+            LTC.submitTX(tx)
+            document.getElementById("refreshWallet").click()
+
+            input.value = ""
+            div.remove()
+        }
+    }
+
+    cancel.innerText = "Cancel"
+    cancel.onclick = function() {
+        div.remove()
+    }
+}
+
+function pkSendAllBtn() {
+    const Meta = getMeta()
+    let password
+
+    const div = document.createElement("div")
+    const input = document.createElement("input")
+    const confirm = document.createElement("button")
+    const cancel = document.createElement("button")
+
+    document.body.children[1].appendChild(div)
+    div.appendChild(input)
+    div.appendChild(confirm)
+    div.appendChild(cancel)
+
+    div.style.position = "absolute"
+    div.style.top = "50dvh"
+    div.style.left = "50dvw"
+    div.style.transform = "translate(-50%, -50%)"
+    div.style.background = "#222"
+
+    input.placeholder = "Enter Password"
+    input.type = "password"
+    
+    confirm.innerText = "Send"
+    confirm.onclick = async function() {
+        password = input.value
+
+        if (await SHA256(password) != Meta.Password) {
+            alert("password wrong!")
+        } else {
+            const wif = await loadEncryptedKey(Meta["Litecoin"], password)
+
+            const TXB = new TX
+            const tx = TXB.SendAllPK(LTC, UTXOpk.Omni, 49, IndexPK, wif)
+
+            LTC.submitTX(tx)
+            document.getElementById("refreshWallet").click()
+
+            input.value = ""
+            div.remove()
+        }
+    }
+
+    cancel.innerText = "Cancel"
+    cancel.onclick = function() {
+        div.remove()
+    }
+}
+
+function pkCopyAddressBtn() {
+    navigator.clipboard.writeText(AddressesPK.Omni[IndexPK])
+    document.getElementById("PKcopyBtn").innerText = "copied!"
+
+    setTimeout(() => {
+        document.getElementById("PKcopyBtn").innerText = "Copy Address"
+    }, 1337);
+}
+
+
 function switchWallet() {
     const SeedWallet = document.getElementById("SeedWallet")
     const PKWallet = document.getElementById("PKWallet")
-    console.log(SeedWallet.style.display)
 
     if (SeedWallet.style.display == "inline-block") {
         SeedWallet.style.display = "none"
@@ -388,43 +486,81 @@ function switchWallet() {
 }
 
 function refreshWallets() {
-    document.querySelectorAll(".custom-select").forEach(select => {
-        const trigger = select.querySelector(".select-trigger");
-        const valueEl = select.querySelector(".select-value");
-        const options = select.querySelector(".select-options");
-        const items = [...options.children];
+    const SeedWallet = document.getElementById("SeedSelect")
+    const SeedTrigger = SeedWallet.children[0]
+    const SeedValue = SeedTrigger.children[0]
+    const SeedAddresses = SeedWallet.children[1]
+    const SeedAddressList = [...SeedAddresses.children]
 
-        function close() {
-            select.classList.remove("open");
-            trigger.setAttribute("aria-expanded", "false");
-        }
+    function SeedClose() {
+        SeedWallet.classList.remove("open")
+        SeedTrigger.setAttribute("aria-expanded", "false")
+    }
 
-        if (!trigger._clickBound) {
-        trigger._clickBound = true;
+    if (!SeedTrigger._clickBound) {
+        SeedTrigger._clickBound = true
 
-        trigger.addEventListener("click", e => {
-            e.stopPropagation();
-            const open = select.classList.toggle("open");
-            trigger.setAttribute("aria-expanded", open);
-        });
-        }
+        SeedTrigger.addEventListener("click", e => {
+            e.stopPropagation()
+            const open = SeedWallet.classList.toggle("open")
+            SeedTrigger.setAttribute("aria-expanded", open)
+        })
 
+        document.addEventListener("click", SeedClose)
+    }
 
-        items.forEach(item => {
-            item.addEventListener("click", () => {
-            items.forEach(i => i.classList.remove("selected"));
-            item.classList.add("selected");
+    SeedAddressList.forEach(item => {
+        item.addEventListener("click", () => {
+            SeedAddressList.forEach(i => i.classList.remove("selected"))
+            item.classList.add("selected")
 
-            valueEl.textContent = item.textContent
-
+            SeedValue.textContent = item.textContent
             Balance = item.dataset.balance
             Index = item.dataset.index
 
-            close();
-            });
-        });
-        if (items.length > 0) items[0].click()
+            SeedClose()
+        })
+    })
 
-        document.addEventListener("click", close);
-    });   
+    if (SeedAddressList.length > 0) SeedAddressList[0].click()
+
+
+    
+    const PKWallet = document.getElementById("PKselect")
+    const PKTrigger = PKWallet.children[0]
+    const PKValue = PKTrigger.children[0]
+    const PKAddresses = PKWallet.children[1]
+    const PKAddressList = [...PKAddresses.children]
+
+    function PKClose() {
+        PKWallet.classList.remove("open")
+        PKTrigger.setAttribute("aria-expanded", "false")
+    }
+
+    if (!PKTrigger._clickBound) {
+        PKTrigger._clickBound = true
+
+        PKTrigger.addEventListener("click", e => {
+            e.stopPropagation()
+            const open = PKWallet.classList.toggle("open")
+            PKTrigger.setAttribute("aria-expanded", open)
+        })
+
+        document.addEventListener("click", PKClose)
+    }
+
+    PKAddressList.forEach(item => {
+        item.addEventListener("click", () => {
+            PKAddressList.forEach(i => i.classList.remove("selected"))
+            item.classList.add("selected")
+
+            PKValue.textContent = item.textContent
+            BalancePK = item.dataset.balance
+            IndexPK = item.dataset.index
+
+            SeedClose()
+        })
+    })
+
+    if (PKAddressList.length > 0) PKAddressList[0].click()
 }

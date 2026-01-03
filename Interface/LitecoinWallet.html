@@ -46,20 +46,18 @@
 
             <div id="SeedWallet" style="border: 1px solid white; display: inline-block;">
                 <h3 style="color: #0f0;">Seed Wallet</h3>
-                <div class="custom-select">
+                <div class="custom-select" id="SeedSelect">
                     <button type="button" class="select-trigger" aria-expanded="false">
                         <span class="select-value">Calculate Addresses</span>
                         <span class="select-arrow">▾</span>
                     </button>
 
                     <ul id="SeedAddresses" class="select-options">
-                        <li data-value="apple">Apfel</li>
-                        <li data-value="banana">Banane</li>
-                        <li data-value="cherry">Kirsche</li>
+                        <li data-value="Hello User">Add a Seed</li>
                     </ul>
 
-                    <input class="address" type="hidden">
-                    <input class="balance" type="hidden">
+                    <!--input class="address" type="hidden"-->
+                    <!--input class="balance" type="hidden"-->
                     <input type="hidden" id="utxo">
                     <input type="hidden" id="adrIndex">
                 </div>
@@ -73,18 +71,16 @@
 
             <div id="PKWallet" style="border: 1px solid white; display: none;">
                 <h3 style="color: #0f0;">PrivateKey Wallet</h3>
-                <div class="custom-select">
+                <div class="custom-select" id="PKselect">
                     <button type="button" class="select-trigger" aria-expanded="false">
                         <span class="select-value">Calculate Addresses</span>
                         <span class="select-arrow">▾</span>
                     </button>
 
                     <ul id="PKAddresses" class="select-options">
-
+                        <li data-value="Hello User">Add a Private Key</li>
                     </ul>
 
-                    <input class="address" type="hidden">
-                    <input class="balance" type="hidden">
                     <input type="hidden" id="PKutxo">
                     <input type="hidden" id="PKadrIndex">
                 </div>
