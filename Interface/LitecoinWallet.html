@@ -38,10 +38,11 @@
 
         <main>
             <div style="border: 1px solid white ;">
-                <button id="refreshWallet" style="width: calc(25dvw - 4px);">Refresh</button>
-                <button onclick="addSeed()" style="width: calc(25dvw - 4px);">Add Seed</button>
-                <button onclick="addKey()" style="width: calc(25dvw - 4px);">Add Private Key</button>
-                <button onclick="switchWallet()" style="width: calc(25dvw - 4px);">Switch Wallet</button>
+                <button id="refreshWallet" style="width: calc(20dvw - 5px);">Refresh</button>
+                <button onclick="addSeed()" style="width: calc(20dvw - 5px);">Add Seed</button>
+                <button onclick="addKey()" style="width: calc(20dvw - 5px);">Add Private Key</button>
+                <button onclick="switchWallet()" style="width: calc(20dvw - 5px);">Switch Wallet</button>
+                <button onclick="switchOmni()" style="width: calc(20dvw - 5px);">DEX</button>
             </div>
 
             <div id="SeedWallet" style="border: 1px solid white; display: inline-block; margin-top: 1rem;">
@@ -58,8 +59,8 @@
 
                     <!--input class="address" type="hidden"-->
                     <!--input class="balance" type="hidden"-->
-                    <input type="hidden" id="utxo">
-                    <input type="hidden" id="adrIndex">
+                    <!--input type="hidden" id="utxo"-->
+                    <!--input type="hidden" id="adrIndex"-->
                 </div>
 
                 <input type="text" id="destination" placeholder="destination" style="width: calc(50dvw - 4px);">
@@ -92,9 +93,9 @@
                 <button onclick="pkCopyAddressBtn()" id="PKcopyBtn" style="width: calc(33.3dvw - 4px);">Copy Address</button>
             </div>
 
-            <div id="Omni" style="border: 1px solid white; display: inline-block; margin-top: 1rem; width: 100dvw;">
-                <h3 style="color: #0f0;">Omni</h3>
-                    <div class="custom-select" id="Omniselect">
+            <div id="OmniWallet" style="border: 1px solid white; display: inline-block; margin-top: 1rem; width: 100dvw;">
+                <h3 style="color: #0f0;">Omni Wallet</h3>
+                <div class="custom-select" id="OmniSelect">
                     <button type="button" class="select-trigger" aria-expanded="false">
                         <span class="select-value">Loading Properties</span>
                         <span class="select-arrow">▾</span>
@@ -103,13 +104,44 @@
                     <ul id="OmniList" class="select-options">
                         <li data-value="Hello User">Nothing found</li>
                     </ul>
+                </div>
 
-                    <input type="hidden" id="OmniID">
+                <div id="OmniDisplay" style="color: #0f0;font-size: 1rem;">
+                    <p>PropertyID <b id="oID"></b></p>
+                    <p>Name <b id="oName"></b></p>
+                    <p>Balance <b id="oBalance"></b></p>
+                    <p>Category <b id="oCategory"></b></p>
+                    <p>Sub-Category <b id="oSubCategory"></b></p>
+                    <p>Data <b id="oData"></b></p>
+                    <p>Type <b id="oType"></b></p>
+                    <p>Total Supply <b id="oSupply"></b></p>
                 </div>
             </div>
 
-            <div id="DEX" style="border: 1px solid white; display: inline-block; margin-top: 1rem; width: 100dvw;">
+            <div id="DEX" style="border: 1px solid white; display: none; margin-top: 1rem; width: 100dvw;">
                 <h3 style="color: #0f0;">Dedicated Exchange</h3>
+                <div class="custom-select" id="DEXSelect">
+                    <button type="button" class="select-trigger" aria-expanded="false">
+                        <span class="select-value">Loading DEX</span>
+                        <span class="select-arrow">▾</span>
+                    </button>
+
+                    <ul id="DEXList" class="select-options">
+                        <li data-value="Hello User">Nothing found</li>
+                    </ul>
+                </div>
+
+                <div id="DEXDisplay" style="color: #0f0;font-size: 1rem;">
+                    <p>PropertyID <b id="dID"></b></p>
+                    <p>Name <b id="dName"></b></p>
+                    <p>Amount Avaialablle <b id="dBalance"></b></p>
+                    <p>Price <b id="dPrice"></b></p>
+                    <p>Category <b id="dCategory"></b></p>
+                    <p>Sub-Category <b id="dSubCategory"></b></p>
+                    <p>Data <b id="dData"></b></p>
+                    <p>Type <b id="dType"></b></p>
+                    <p>Total Supply <b id="dSupply"></b></p>
+                </div>
             </div>
 
             <div id="Guard">

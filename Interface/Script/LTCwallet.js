@@ -3,9 +3,10 @@ const OMNI = new Omnilayer
 const UTXO = new Array
 const UTXOpk = new Array
 
-var Addresses, Balance, Index, oBal
-var AddressesPK, BalancePK, IndexPK, oBalPK
-var DEX
+var Addresses, Balance, Index
+var AddressesPK, BalancePK, IndexPK
+var oBal, oBalPK, propertyID
+var DEX, DEXpropertyID
 
 Init()
 
@@ -337,11 +338,15 @@ async function GetLitecoin(Meta, password) {
     oBal = await OMNI.getBalanceByAddresses(Addresses.Omni)
     console.log(oBal[Index])
 
+    refreshOmni(oBal[Index])
+
     oBalPK = await OMNI.getBalanceByAddresses(AddressesPK.Omni)
     console.log(oBalPK)
 
     DEX = await OMNI.getDEX()
     console.log(DEX)
+
+    refreshDEX()
 }
 
 function seedSendBtn() {
@@ -489,9 +494,24 @@ function switchWallet() {
     if (SeedWallet.style.display == "inline-block") {
         SeedWallet.style.display = "none"
         PKWallet.style.display = "inline-block"
+        refreshOmni(oBalPK[IndexPK])
     } else {
         SeedWallet.style.display = "inline-block"
         PKWallet.style.display = "none"
+        refreshOmni(oBal[Index])
+    }
+}
+
+function switchOmni() {
+    const OmniWallet = document.getElementById("OmniWallet")
+    const DEX = document.getElementById("DEX")
+
+    if (OmniWallet.style.display == "inline-block") {
+        OmniWallet.style.display = "none"
+        DEX.style.display = "inline-block"
+    } else {
+        OmniWallet.style.display = "inline-block"
+        DEX.style.display = "none"
     }
 }
 
@@ -528,7 +548,7 @@ function refreshWallets() {
             Balance = item.dataset.balance
             Index = item.dataset.index
 
-            if (oBal != undefined && oBal.length > item.dataset.index) console.log(oBal[item.dataset.index])
+            if (oBal != undefined && oBal.length > item.dataset.index) refreshOmni(oBal[item.dataset.index])
 
             SeedClose()
         })
@@ -570,9 +590,168 @@ function refreshWallets() {
             BalancePK = item.dataset.balance
             IndexPK = item.dataset.index
 
+            if (oBalPK != undefined && oBalPK.length > item.dataset.index) refreshOmni(oBalPK[item.dataset.index])
+
             SeedClose()
         })
     })
 
     if (PKAddressList.length > 0) PKAddressList[0].click()
+}
+
+function refreshOmni(oBalance) {
+    const OmniWallet = document.getElementById("OmniSelect")
+    const OmniTrigger = OmniWallet.children[0]
+    const OmniValue = OmniTrigger.children[0]
+    const OmniList = OmniWallet.children[1]
+
+    OmniList.innerHTML = ""
+
+    for (let a = 0; a < oBalance.length; a++) {
+        const element = oBalance[a]
+        
+        const item = document.createElement("li")
+        item.innerText = element.propertyid + " - " + element.name
+
+        item.dataset.propertyID = element.propertyid
+        item.dataset.name = element.name
+        item.dataset.balance = element.balance
+
+        OmniList.appendChild(item)
+    }
+
+    const OmniListItems = [...OmniList.children]
+
+    console.log(oBalance)
+
+    function OmniClose() {
+        OmniWallet.classList.remove("open")
+        OmniTrigger.setAttribute("aria-expanded", "false")
+    }
+
+    if (!OmniTrigger._clickBound) {
+        OmniTrigger._clickBound = true
+
+        OmniTrigger.addEventListener("click", e => {
+            e.stopPropagation()
+            const open = OmniWallet.classList.toggle("open")
+            OmniTrigger.setAttribute("aria-expanded", open)
+        })
+
+        document.addEventListener("click", OmniClose)
+    }
+
+    OmniListItems.forEach(item => {
+        console.log(item)
+        item.addEventListener("click", async function() {
+            OmniListItems.forEach(i => i.classList.remove("selected"))
+            item.classList.add("selected")
+
+            OmniValue.textContent = item.textContent
+            propertyID = item.dataset.propertyID
+            //IndexPK = item.dataset.index
+
+            document.getElementById("oID").innerText = item.dataset.propertyID
+            document.getElementById("oName").innerText = item.dataset.name
+            document.getElementById("oBalance").innerText = item.dataset.balance
+
+            const Property = await OMNI.getProperty(item.dataset.propertyID)
+            console.log(Property)
+
+            document.getElementById("oCategory").innerText = Property.category
+            document.getElementById("oSubCategory").innerText = Property.subcategory
+            document.getElementById("oSupply").innerText = Property.totaltokens
+
+            document.getElementById("oData").innerText = Property.data
+
+            if (Property["non-fungibletoken"]) document.getElementById("oType").innerText = "NFT"
+            else if (Property.managedissuance)document.getElementById("oType").innerText = "Managed Supply"
+            else document.getElementById("oType").innerText = "Fixed Supply"
+
+            OmniClose()
+        })
+    })
+
+    if (OmniListItems.length > 0) OmniListItems[0].click()
+}
+
+async function refreshDEX() {
+    const DEXWallet = document.getElementById("DEXSelect")
+    const DEXTrigger = DEXWallet.children[0]
+    const DEXValue = DEXTrigger.children[0]
+    const DEXList = DEXWallet.children[1]
+
+    DEXList.innerHTML = ""
+
+    console.log(DEX)
+
+    for (let a = 0; a < DEX.length; a++) {
+        const element = DEX[a]
+
+        const Property = await OMNI.getProperty(element.propertyid)
+        console.log(Property)
+        
+        const item = document.createElement("li")
+        item.innerText = element.propertyid + " - " + Property.name
+
+        item.dataset.propertyID = element.propertyid
+        item.dataset.amountavailable = element.amountavailable
+        item.dataset.unitprice = element.unitprice
+
+        DEXList.appendChild(item)
+    }
+
+    const DEXListItems = [...DEXList.children]
+
+    function DEXClose() {
+        DEXWallet.classList.remove("open")
+        DEXTrigger.setAttribute("aria-expanded", "false")
+    }
+
+    if (!DEXTrigger._clickBound) {
+        DEXTrigger._clickBound = true
+
+        DEXTrigger.addEventListener("click", e => {
+            e.stopPropagation()
+            const open = DEXWallet.classList.toggle("open")
+            DEXTrigger.setAttribute("aria-expanded", open)
+        })
+
+        document.addEventListener("click", DEXClose)
+    }
+
+    DEXListItems.forEach(item => {
+        console.log(item)
+        item.addEventListener("click", async function() {
+            DEXListItems.forEach(i => i.classList.remove("selected"))
+            item.classList.add("selected")
+
+            DEXValue.textContent = item.textContent
+            DEXpropertyID = item.dataset.propertyID
+            //IndexPK = item.dataset.index
+
+            document.getElementById("dBalance").innerText = item.dataset.amountavailable
+            document.getElementById("dPrice").innerText = item.dataset.unitprice + " LTC"
+
+            const Property = await OMNI.getProperty(item.dataset.propertyID)
+            console.log(Property)
+
+            document.getElementById("dID").innerText = Property.propertyid
+            document.getElementById("dName").innerText = Property.name
+
+            document.getElementById("dCategory").innerText = Property.category
+            document.getElementById("dSubCategory").innerText = Property.subcategory
+            document.getElementById("dSupply").innerText = Property.totaltokens
+
+            document.getElementById("dData").innerText = Property.data
+
+            if (Property["non-fungibletoken"]) document.getElementById("dType").innerText = "NFT"
+            else if (Property.managedissuance)document.getElementById("dType").innerText = "Managed Supply"
+            else document.getElementById("dType").innerText = "Fixed Supply"
+
+            DEXClose()
+        })
+    })
+
+    if (DEXListItems.length > 0) DEXListItems[0].click()
 }
