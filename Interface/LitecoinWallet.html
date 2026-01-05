@@ -36,16 +36,16 @@
     <body>
         <header></header>
 
-        <main>
-            <div style="border: 1px solid white ;">
-                <button id="refreshWallet" style="width: calc(20dvw - 5px);">Refresh</button>
-                <button onclick="addSeed()" style="width: calc(20dvw - 5px);">Add Seed</button>
-                <button onclick="addKey()" style="width: calc(20dvw - 5px);">Add Private Key</button>
-                <button onclick="switchWallet()" style="width: calc(20dvw - 5px);">Switch Wallet</button>
-                <button onclick="switchOmni()" style="width: calc(20dvw - 5px);">DEX</button>
+        <main style="overflow-y: scroll;">
+            <div style="width: 100dvw; display: flex; gap: 8px; width: 100dvw;">
+                <button id="refreshWallet">Refresh</button>
+                <button onclick="addSeed()">Add Seed</button>
+                <button onclick="addKey()">Add Private Key</button>
+                <button onclick="switchWallet()">Switch Wallet</button>
+                <button onclick="switchOmni()">DEX</button>
             </div>
 
-            <div id="SeedWallet" style="border: 1px solid white; display: inline-block; margin-top: 1rem;">
+            <div id="SeedWallet" style="display: inline-block; margin-top: 1rem;">
                 <h3 style="color: #0f0;">Seed Wallet</h3>
                 <div class="custom-select" id="SeedSelect">
                     <button type="button" class="select-trigger" aria-expanded="false">
@@ -70,7 +70,7 @@
                 <button onclick="copyAddressBtn()" id="copyBtn" style="width: calc(33.3dvw - 4px);">Copy Address</button>
             </div>
 
-            <div id="PKWallet" style="border: 1px solid white; display: none; margin-top: 1rem;">
+            <div id="PKWallet" style="display: none; margin-top: 1rem;">
                 <h3 style="color: #0f0;">PrivateKey Wallet</h3>
                 <div class="custom-select" id="PKselect">
                     <button type="button" class="select-trigger" aria-expanded="false">
@@ -93,7 +93,7 @@
                 <button onclick="pkCopyAddressBtn()" id="PKcopyBtn" style="width: calc(33.3dvw - 4px);">Copy Address</button>
             </div>
 
-            <div id="OmniWallet" style="border: 1px solid white; display: inline-block; margin-top: 1rem; width: 100dvw;">
+            <div id="OmniWallet" style="display: inline-block; margin-top: 1rem; width: 100dvw;">
                 <h3 style="color: #0f0;">Omni Wallet</h3>
                 <div class="custom-select" id="OmniSelect">
                     <button type="button" class="select-trigger" aria-expanded="false">
@@ -118,7 +118,7 @@
                 </div>
             </div>
 
-            <div id="DEX" style="border: 1px solid white; display: none; margin-top: 1rem; width: 100dvw;">
+            <div id="DEX" style="display: none; margin-top: 1rem; width: 100dvw;">
                 <h3 style="color: #0f0;">Dedicated Exchange</h3>
                 <div class="custom-select" id="DEXSelect">
                     <button type="button" class="select-trigger" aria-expanded="false">

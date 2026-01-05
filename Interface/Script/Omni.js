@@ -109,20 +109,12 @@ class Omnilayer {
       if (property.divisible) a = this.Number2Hex(amount * 100000000)
       else a = this.Number2Hex(amount)
 
-      console.log(a, a.length)
-      console.log(d, d.length)
-
-      console.log(amountforsaleHex, amountforsaleHex.length)
-
       propertyHex = propertyHex.slice(0, p.length * -1) + p
       amountforsaleHex = amountforsaleHex.slice(0, a.length * -1) + a
       amountdesiredHex = amountdesiredHex.slice(0, d.length * -1) + d
 
-      console.log(amountforsaleHex, amountforsaleHex.length)
-
       let payload = OP + length + marker + version + type + propertyHex + amountforsaleHex + amountdesiredHex + paymentwindowHex + minacceptfeeHex + actionHex
       if (action == 3) payload = OP + length + marker + version + type + propertyHex + "0000000000000000000000000000000000000000000000000003"
-      console.log(payload)
 
       return payload
     }
@@ -143,17 +135,11 @@ class Omnilayer {
 
       const property = await this.getProperty(propertyid)
 
-      console.log(property.divisible)
-
       if (property.divisible) a = this.Number2Hex(amount * 100000000)
       else a = this.Number2Hex(amount)
 
-      console.log(a, amount)
-
       propertyHex = propertyHex.slice(0, p.length * -1) + p
       amountHex = amountHex.slice(0, a.length * -1) + a
-
-      console.log(amountHex)
 
       const payload = OP + length + marker + version + type + propertyHex + amountHex
       return payload

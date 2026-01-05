@@ -50,10 +50,11 @@ main {
     background: #222; /* Hintergrund für Main */
     padding-top: 8dvh; /* Gleiche Höhe wie der Header, damit der Inhalt nicht unter den Header rutscht */
     box-sizing: border-box;
-    overflow-x: hidden; /* Verhindert Überlauf */
-    overflow-y: scroll;
+    overflow: hidden; /* Verhindert Überlauf */
     position: relative;
     z-index: 1;
+
+    scrollbar-width: none;        /* Firefox */
 }
 
 /* Section, die die Artikel enthält */
@@ -80,6 +81,8 @@ article {
     overflow-y: scroll;
     overflow-x: hidden;
     max-height: 100%;
+
+    scrollbar-width: none;
 }
 
 /* Hover-Effekt mit Farbverlauf als Border nur für links und rechts */
