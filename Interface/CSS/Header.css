@@ -45,7 +45,7 @@ header::after {
     position: absolute;
     left: 3.1415dvw;
     padding-top: 1.6dvh;
-    font-size: clamp(3dvh, 4vw, 6dvh);
+    font-size: 4dvh;
     font-weight: bold;
     font-family: monospace;
     background: linear-gradient(90deg, #f7931a, #345D9D, #cb9800, #33ff00, #870087, #f7931a);
@@ -108,7 +108,7 @@ header::after {
 .nav-item .dropdown {
     position: absolute;
     top: 100%; /* Positioniert das Dropdown direkt unter dem Button */
-    left: 0;
+    right: 0;
     background: rgba(20, 20, 20, 0.95);
     border-radius: 0.5rem;
     opacity: 0;

@@ -122,7 +122,11 @@ function Login() {
             refreshBtn.onclick = function() {
                 if (document.getElementById("SeedWallet").style.display == "inline-block") SeedWallet(Meta["Litecoin"], input.value)
                 else KeyWallet(Meta["Litecoin"], input.value)
+
+                refreshDEX()
             }
+
+            refreshDEX()
 
             if (Meta["Litecoin"].Seeds.length > 0) {
                 SeedWallet(Meta["Litecoin"], input.value)
@@ -694,14 +698,23 @@ async function refreshDEX() {
     const DEXTrigger = DEXWallet.children[0]
     const DEXValue = DEXTrigger.children[0]
     const DEXList = DEXWallet.children[1]
-
+    const DEXids = new Array
+    
     DEXList.innerHTML = ""
 
 
     for (let a = 0; a < DEX.length; a++) {
+        const element = DEX[a].propertyid
+        
+        DEXids.push(element)
+    }
+
+    const DEXproperties = await OMNI.getProperties(DEXids)
+
+    for (let a = 0; a < DEX.length; a++) {
         const element = DEX[a]
 
-        const Property = await OMNI.getProperty(element.propertyid)
+        const Property = DEXproperties[a]
         
         const item = document.createElement("li")
         item.innerText = element.propertyid + " - " + Property.name

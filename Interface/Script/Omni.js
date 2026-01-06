@@ -11,6 +11,18 @@ class Omnilayer {
         return r
     }
 
+    async getProperties(ids) {
+      const urls = new Array
+
+      for (let a = 0; a < ids.length; a++) {
+        urls.push(this.URL + "getproperty&id=" + ids[a])
+      }
+
+      const p = urls.map(u => fetch(u).then(r => r.json()))
+      const e = await Promise.all(p)
+      return e
+    }
+
     async getBalanceByAddress(address) {
         const p = await fetch(this.URL + "getbalforadr&adr=" + address)
         const r = await p.json()
