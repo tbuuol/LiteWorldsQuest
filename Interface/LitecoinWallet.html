@@ -56,18 +56,18 @@
                     <ul id="SeedAddresses" class="select-options">
                         <li data-value="Hello User">Add a Seed</li>
                     </ul>
-
-                    <!--input class="address" type="hidden"-->
-                    <!--input class="balance" type="hidden"-->
-                    <!--input type="hidden" id="utxo"-->
-                    <!--input type="hidden" id="adrIndex"-->
                 </div>
 
-                <input type="text" id="destination" placeholder="destination" style="width: calc(50dvw - 4px);">
-                <input type="number" id="amount" placeholder="amount" step="0.0001" min="0.0001" style="width: calc(50dvw - 4px);">
-                <button onclick="seedSendBtn()" style="width: calc(33.3dvw - 4px);">Send</button>
-                <button onclick="seedSendAllBtn()" style="width: calc(33.3dvw - 4px);">Send All</button>
-                <button onclick="copyAddressBtn()" id="copyBtn" style="width: calc(33.3dvw - 4px);">Copy Address</button>
+                <div style="display: flex; gap: 8px; width: 100dvw;">
+                    <input type="text" id="destination" placeholder="destination" style="width: calc(50dvw - 4px);">
+                    <input type="number" id="amount" placeholder="amount" step="0.0001" min="0.0001" style="width: calc(50dvw - 4px);">
+                </div>
+
+                <div style="display: flex; gap: 8px; width: 100dvw;">
+                    <button onclick="seedSendBtn()" style="width: calc(33.3dvw - 4px);">Send</button>
+                    <button onclick="seedSendAllBtn()" style="width: calc(33.3dvw - 4px);">Send All</button>
+                    <button onclick="copyAddressBtn()" id="copyBtn" style="width: calc(33.3dvw - 4px);">Copy Address</button>
+                </div>
             </div>
 
             <div id="PKWallet" style="display: none; margin-top: 1rem;">
@@ -115,6 +115,8 @@
                     <p>Data <b id="oData"></b></p>
                     <p>Type <b id="oType"></b></p>
                     <p>Total Supply <b id="oSupply"></b></p>
+                    <div id="OmniDestination" style="display: flex; gap: 8px; width: 100dvw;"></div>
+                    <div id="OmniBTN" style="display: flex; width: 100dvw;"></div>
                 </div>
             </div>
 

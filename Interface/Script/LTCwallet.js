@@ -564,6 +564,7 @@ function updateSeedWallet() {
             item.classList.add("selected")
 
             SeedValue.textContent = item.textContent
+            SeedValue.dataset.address = item.textContent.split(" - ")[1]
             Balance = item.dataset.balance
             Index = item.dataset.index
 
@@ -684,6 +685,45 @@ function refreshOmni(oBalance) {
             else if (Property.managedissuance)document.getElementById("oType").innerText = "Managed Supply"
             else document.getElementById("oType").innerText = "Fixed Supply"
 
+            const Odesti = document.getElementById("OmniDestination")
+            Odesti.innerHTML = ""
+
+            const Obtn = document.getElementById("OmniBTN")
+            Obtn.innerHTML = ""
+
+            const destination = document.createElement("input")
+            destination.placeholder = "destination"
+            destination.style = "width: calc(50dvw - 4px);"
+
+            Odesti.appendChild(destination)
+
+            if (Property["non-fungibletoken"]) {
+
+            } else {
+                const amount = document.createElement("input")
+                amount.type = "number"
+                amount.placeholder = "amount"
+                amount.style = "width: calc(50dvw - 4px);"
+
+                Odesti.appendChild(amount)
+
+                const send_btn = document.createElement("button")
+                send_btn.innerText = "Send Token"
+                send_btn.onclick = async function() {
+                    const payload = await OMNI.OPsimpleSend(Property.propertyid, amount.value)
+                    const origin = document.getElementById("SeedSelect").children[0].children[0].dataset.address
+                    const tx = new TX
+                    const t = tx.TokenSend(LTC, origin, destination.value, payload, UTXO.Omni[Index], LTC.GetWifFromSeedAddress(49, Index))
+
+                    if (confirm("Submit TX?")) {
+                        LTC.submitTX(t.toHex())
+                        document.getElementById("refreshWallet").click()
+                    }
+                }
+
+                Obtn.appendChild(send_btn)
+            }
+
             OmniClose()
         })
     })
@@ -699,7 +739,7 @@ async function refreshDEX() {
     const DEXValue = DEXTrigger.children[0]
     const DEXList = DEXWallet.children[1]
     const DEXids = new Array
-    
+
     DEXList.innerHTML = ""
 
 

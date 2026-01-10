@@ -9,7 +9,7 @@
   all: unset;                 /* 💣 reset ALLES */
   box-sizing: border-box;
 
-  width: calc(100dvw - 4px);
+  width: 100dvw;
   padding: 12px;
   background: #111;
   color: #0f0;

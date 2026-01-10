@@ -176,6 +176,11 @@ class Litecoin {
         return array
     }
 
+    GetWifFromSeedAddress(Type, Index) {
+        const child = this.root.derivePath("m/"+Type+"'/2'/0'/0/" +Index)
+        return this.root.derivePath("m/"+Type+"'/2'/0'/0/" +Index).toWIF()
+    }
+
     async UTXO(addresses) {
         const url = "https://litecoinspace.org/api/address/"
         const urls = new Array
