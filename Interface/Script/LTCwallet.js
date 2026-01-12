@@ -1,12 +1,10 @@
 const LTC = new Litecoin
 const OMNI = new Omnilayer
-const UTXO = new Array
-const UTXOpk = new Array
 
-var Addresses, Balance, Index
-var AddressesPK, BalancePK, IndexPK
-var oBal, oBalPK, propertyID
-var DEX, DEXpropertyID
+const UTXO = new Array
+const OmniBalance = new Array
+const Addresses = new Array
+
 
 Init()
 
@@ -14,6 +12,7 @@ function Init() {
     if (getMeta() == null) Setup()
     else Login()
 }
+
 
 function Setup() {
     const LoginBG = document.createElement("div")
@@ -117,16 +116,15 @@ function Login() {
 
         if (Meta.Password == password) {
             LoginBG.remove()
+            refreshDEX()
 
             const refreshBtn = document.getElementById("refreshWallet")
             refreshBtn.onclick = function() {
-                if (document.getElementById("SeedWallet").style.display == "inline-block") SeedWallet(Meta["Litecoin"], input.value)
-                else KeyWallet(Meta["Litecoin"], input.value)
+                SeedWallet(Meta["Litecoin"], input.value)
+                KeyWallet(Meta["Litecoin"], input.value)
 
                 refreshDEX()
             }
-
-            refreshDEX()
 
             if (Meta["Litecoin"].Seeds.length > 0) {
                 SeedWallet(Meta["Litecoin"], input.value)
@@ -289,23 +287,24 @@ function addKey() {
     div.appendChild(cancel_btn)
 }
 
+
 async function SeedWallet(Meta, password) {
     const entrophy = await loadEncryptedSeed(Meta, password)
-    Addresses = LTC.AddressesFromSeed(entrophy)
+    Addresses.Seed = LTC.AddressesFromSeed(entrophy)
 
     //const UTXO = new Array
-    UTXO.Legacy = await LTC.UTXO(Addresses.Legacy)
-    UTXO.Omni = await LTC.UTXO(Addresses.Omni)
+    //UTXO.Legacy = await LTC.UTXO(Addresses.Legacy)
+    UTXO.Seed = await LTC.UTXO(Addresses.Seed)
 
     const addressList = document.getElementById("SeedAddresses")
     addressList.innerHTML = ""
 
-    for (let a = 0; a < Addresses.Omni.length; a++) {
-        const address = Addresses.Omni[a]
+    for (let a = 0; a < Addresses.Seed.length; a++) {
+        const address = Addresses.Seed[a]
         let balance = 0
         
-        for (let b = 0; b < UTXO.Omni[a].length; b++) {
-            const utxo = UTXO.Omni[a][b]
+        for (let b = 0; b < UTXO.Seed[a].length; b++) {
+            const utxo = UTXO.Seed[a][b]
             balance += utxo.value
         }
 
@@ -319,227 +318,17 @@ async function SeedWallet(Meta, password) {
 
         addressList.appendChild(adr)
     }
-
     updateSeedWallet()
-
-    oBal = await OMNI.getBalanceByAddresses(Addresses.Omni)
-    refreshOmni(oBal[Index])
 }
 
-async function KeyWallet(Meta, password, silent = false) {
-    const pkey = await loadEncryptedKey(Meta, password)
-    const wif = new Array
-    for (let a = 0; a < pkey.length; a++) {
-        wif[a] = LTC.uint8ToWIF(pkey[a])
-    }
-
-    AddressesPK = LTC.AddressesFromWIF(wif)
-    
-    UTXOpk.Legacy = await LTC.UTXO(AddressesPK.Legacy)
-    UTXOpk.Omni = await LTC.UTXO(AddressesPK.Omni)
-
-    const addressList = document.getElementById("PKAddresses")
-    addressList.innerHTML = ""
-
-    for (let a = 0; a < AddressesPK.Omni.length; a++) {
-        const address = AddressesPK.Omni[a]
-        let balance = 0
-        
-        for (let b = 0; b < UTXOpk.Omni[a].length; b++) {
-            const utxo = UTXOpk.Omni[a][b]
-            balance += utxo.value
-        }
-
-        balance /= 100000000
-
-        const adr = document.createElement("li")
-        adr.innerText = balance.toFixed(8) + " LTC - " + address
-
-        adr.dataset.balance = balance
-        adr.dataset.index = a
-
-        addressList.appendChild(adr)          
-    }
-
-    updateKeyWallet()
-
-    oBalPK = await OMNI.getBalanceByAddresses(AddressesPK.Omni)
-    if (!silent) refreshOmni(oBalPK[IndexPK])
-}
-
-
-function seedSendBtn() {
-    const TXB = new TX
-    const tx = TXB.SendSeed(LTC, Addresses.Omni, UTXO.Omni, 49, Index)
-
-    if (confirm("Submit TX?")) {
-        LTC.submitTX(tx)
-        document.getElementById("refreshWallet").click()
-    }
-}
-
-function seedSendAllBtn() {
-    const TXB = new TX
-    const tx = TXB.SendAllSeed(LTC, UTXO.Omni, 49, Index)
-
-    if (confirm("Submit TX?")) {
-        LTC.submitTX(tx)
-        document.getElementById("refreshWallet").click()
-    }
-}
-
-function copyAddressBtn() {
-    navigator.clipboard.writeText(Addresses.Omni[Index])
-    document.getElementById("copyBtn").innerText = "copied!"
-
-    setTimeout(() => {
-        document.getElementById("copyBtn").innerText = "Copy Address"
-    }, 1337);
-}
-
-
-function pkSendBtn() {
-    const Meta = getMeta()
-    let password
-
-    const div = document.createElement("div")
-    const input = document.createElement("input")
-    const confirm = document.createElement("button")
-    const cancel = document.createElement("button")
-
-    document.body.children[1].appendChild(div)
-    div.appendChild(input)
-    div.appendChild(confirm)
-    div.appendChild(cancel)
-
-    div.style.position = "absolute"
-    div.style.top = "50dvh"
-    div.style.left = "50dvw"
-    div.style.transform = "translate(-50%, -50%)"
-    div.style.background = "#222"
-
-    input.placeholder = "Enter Password"
-    input.type = "password"
-    
-    confirm.innerText = "Send"
-    confirm.onclick = async function() {
-        password = input.value
-
-        if (await SHA256(password) != Meta.Password) {
-            alert("password wrong!")
-        } else {
-            const TXB = new TX
-            const wif = await loadEncryptedKey(Meta["Litecoin"], password)
-
-    
-            const tx = TXB.SendPK(LTC, AddressesPK.Omni, UTXOpk.Omni, 49, IndexPK, wif)
-            LTC.submitTX(tx)
-            document.getElementById("refreshWallet").click()
-
-            input.value = ""
-            div.remove()
-        }
-    }
-
-    cancel.innerText = "Cancel"
-    cancel.onclick = function() {
-        div.remove()
-    }
-}
-
-function pkSendAllBtn() {
-    const Meta = getMeta()
-    let password
-
-    const div = document.createElement("div")
-    const input = document.createElement("input")
-    const confirm = document.createElement("button")
-    const cancel = document.createElement("button")
-
-    document.body.children[1].appendChild(div)
-    div.appendChild(input)
-    div.appendChild(confirm)
-    div.appendChild(cancel)
-
-    div.style.position = "absolute"
-    div.style.top = "50dvh"
-    div.style.left = "50dvw"
-    div.style.transform = "translate(-50%, -50%)"
-    div.style.background = "#222"
-
-    input.placeholder = "Enter Password"
-    input.type = "password"
-    
-    confirm.innerText = "Send"
-    confirm.onclick = async function() {
-        password = input.value
-
-        if (await SHA256(password) != Meta.Password) {
-            alert("password wrong!")
-        } else {
-            const wif = await loadEncryptedKey(Meta["Litecoin"], password)
-
-            const TXB = new TX
-            const tx = TXB.SendAllPK(LTC, UTXOpk.Omni, 49, IndexPK, wif)
-
-            LTC.submitTX(tx)
-            document.getElementById("refreshWallet").click()
-
-            input.value = ""
-            div.remove()
-        }
-    }
-
-    cancel.innerText = "Cancel"
-    cancel.onclick = function() {
-        div.remove()
-    }
-}
-
-function pkCopyAddressBtn() {
-    navigator.clipboard.writeText(AddressesPK.Omni[IndexPK])
-    document.getElementById("PKcopyBtn").innerText = "copied!"
-
-    setTimeout(() => {
-        document.getElementById("PKcopyBtn").innerText = "Copy Address"
-    }, 1337);
-}
-
-
-function switchWallet() {
-    const SeedWallet = document.getElementById("SeedWallet")
-    const PKWallet = document.getElementById("PKWallet")
-
-    if (SeedWallet.style.display == "inline-block") {
-        SeedWallet.style.display = "none"
-        PKWallet.style.display = "inline-block"
-        if (oBalPK != undefined) refreshOmni(oBalPK[IndexPK])
-    } else {
-        SeedWallet.style.display = "inline-block"
-        PKWallet.style.display = "none"
-        if (oBal != undefined) refreshOmni(oBal[Index])
-    }
-}
-
-function switchOmni() {
-    const OmniWallet = document.getElementById("OmniWallet")
-    const DEX = document.getElementById("DEX")
-
-    if (OmniWallet.style.display == "inline-block") {
-        OmniWallet.style.display = "none"
-        DEX.style.display = "inline-block"
-    } else {
-        OmniWallet.style.display = "inline-block"
-        DEX.style.display = "none"
-    }
-}
-
-function updateSeedWallet() {
+async function updateSeedWallet() {
     const SeedWallet = document.getElementById("SeedSelect")
     const SeedTrigger = SeedWallet.children[0]
     const SeedValue = SeedTrigger.children[0]
     const SeedAddresses = SeedWallet.children[1]
     const SeedAddressList = [...SeedAddresses.children]
+
+    OmniBalance.Seed = await OMNI.getBalanceByAddresses(Addresses.Seed)
 
     function SeedClose() {
         SeedWallet.classList.remove("open")
@@ -565,11 +354,10 @@ function updateSeedWallet() {
 
             SeedValue.textContent = item.textContent
             SeedValue.dataset.address = item.textContent.split(" - ")[1]
-            Balance = item.dataset.balance
-            Index = item.dataset.index
-
-            if (oBal != undefined && oBal.length > item.dataset.index) refreshOmni(oBal[item.dataset.index])
-
+            SeedValue.dataset.balance = item.dataset.balance
+            SeedValue.dataset.index = item.dataset.index
+            
+            refreshOmni(OmniBalance.Seed[item.dataset.index])
             SeedClose()
         })
     })
@@ -579,12 +367,50 @@ function updateSeedWallet() {
 
 }
 
-function updateKeyWallet() {
-    const PKWallet = document.getElementById("PKselect")
+
+async function KeyWallet(Meta, password) {
+    const pkey = await loadEncryptedKey(Meta, password)
+    const wif = new Array
+    for (let a = 0; a < pkey.length; a++) {
+        wif[a] = LTC.uint8ToWIF(pkey[a])
+    }
+
+    Addresses.Key = LTC.AddressesFromWIF(wif)
+    UTXO.Key = await LTC.UTXO(Addresses.Key)
+
+    const addressList = document.getElementById("KeyAddresses")
+    addressList.innerHTML = ""
+
+    for (let a = 0; a < Addresses.Key.length; a++) {
+        const address = Addresses.Key[a]
+        let balance = 0
+        
+        for (let b = 0; b < UTXO.Key[a].length; b++) {
+            const utxo = UTXO.Key[a][b]
+            balance += utxo.value
+        }
+
+        balance /= 100000000
+
+        const adr = document.createElement("li")
+        adr.innerText = balance.toFixed(8) + " LTC - " + address
+
+        adr.dataset.balance = balance
+        adr.dataset.index = a
+
+        addressList.appendChild(adr)          
+    }
+    updateKeyWallet()
+}
+
+async function updateKeyWallet() {
+    const PKWallet = document.getElementById("KeySelect")
     const PKTrigger = PKWallet.children[0]
     const PKValue = PKTrigger.children[0]
     const PKAddresses = PKWallet.children[1]
     const PKAddressList = [...PKAddresses.children]
+
+    OmniBalance.Key = await OMNI.getBalanceByAddresses(Addresses.Key)
 
     function PKClose() {
         PKWallet.classList.remove("open")
@@ -609,11 +435,10 @@ function updateKeyWallet() {
             item.classList.add("selected")
 
             PKValue.textContent = item.textContent
-            BalancePK = item.dataset.balance
-            IndexPK = item.dataset.index
+            PKValue.dataset.balance = item.dataset.balance
+            PKValue.dataset.index = item.dataset.index
 
-            if (oBalPK != undefined && oBalPK.length > item.dataset.index) refreshOmni(oBalPK[item.dataset.index])
-
+            if (document.getElementById("KeyWallet").style.display != "none") refreshOmni(OmniBalance.Key[item.dataset.index])
             PKClose()
         })
     })
@@ -621,23 +446,38 @@ function updateKeyWallet() {
     if (PKAddressList.length > 0) PKAddressList[0].click()
 }
 
-function refreshOmni(oBalance) {
+
+async function refreshOmni(Balance) {
     const OmniWallet = document.getElementById("OmniSelect")
     const OmniTrigger = OmniWallet.children[0]
     const OmniValue = OmniTrigger.children[0]
     const OmniList = OmniWallet.children[1]
+    const IDs = new Array
 
     OmniList.innerHTML = ""
 
-    for (let a = 0; a < oBalance.length; a++) {
-        const element = oBalance[a]
-        
-        const item = document.createElement("li")
-        item.innerText = element.propertyid + " - " + element.name
+    for (let a = 0; a < Balance.length; a++) {
+        IDs.push(Balance[a].propertyid)
+    }
 
-        item.dataset.propertyID = element.propertyid
+    o = await OMNI.getProperties(IDs)
+
+    for (let a = 0; a < o.length; a++) {
+        const element = o[a]        
+        const item = document.createElement("li")
+
+        item.innerText = element.propertyid + " - " + element.name
+        item.dataset.id = element.propertyid
         item.dataset.name = element.name
-        item.dataset.balance = element.balance
+        item.dataset.balance = Balance[a].balance
+        item.dataset.category = element.category
+        item.dataset.subcategory = element.subcategory
+        item.dataset.data = element.data
+        item.dataset.totaltokens = element.totaltokens
+
+        if (element["non-fungibletoken"]) item.dataset.type = "NFT"
+        else if (element.managedissuance) item.dataset.type = "Managed Supply"
+        else item.dataset.type = "Fixed Supply"
 
         OmniList.appendChild(item)
     }
@@ -667,23 +507,21 @@ function refreshOmni(oBalance) {
             item.classList.add("selected")
 
             OmniValue.textContent = item.textContent
-            propertyID = item.dataset.propertyID
+            //propertyID = item.dataset.propertyID
 
-            document.getElementById("oID").innerText = item.dataset.propertyID
+            document.getElementById("oID").innerText = item.dataset.id
             document.getElementById("oName").innerText = item.dataset.name
             document.getElementById("oBalance").innerText = item.dataset.balance
 
-            const Property = await OMNI.getProperty(item.dataset.propertyID)
+            //const Property = await OMNI.getProperty(item.dataset.propertyID)
 
-            document.getElementById("oCategory").innerText = Property.category
-            document.getElementById("oSubCategory").innerText = Property.subcategory
-            document.getElementById("oSupply").innerText = Property.totaltokens
+            document.getElementById("oCategory").innerText = item.dataset.category
+            document.getElementById("oSubCategory").innerText = item.dataset.subcategory
+            document.getElementById("oSupply").innerText = item.dataset.totaltokens
 
-            document.getElementById("oData").innerText = Property.data
+            document.getElementById("oData").innerText = item.dataset.data
+            document.getElementById("oType").innerText = item.dataset.type
 
-            if (Property["non-fungibletoken"]) document.getElementById("oType").innerText = "NFT"
-            else if (Property.managedissuance)document.getElementById("oType").innerText = "Managed Supply"
-            else document.getElementById("oType").innerText = "Fixed Supply"
 
             const Odesti = document.getElementById("OmniDestination")
             Odesti.innerHTML = ""
@@ -697,7 +535,7 @@ function refreshOmni(oBalance) {
 
             Odesti.appendChild(destination)
 
-            if (Property["non-fungibletoken"]) {
+            if (item.dataset.type == "NFT") {
 
             } else {
                 const amount = document.createElement("input")
@@ -706,6 +544,7 @@ function refreshOmni(oBalance) {
                 amount.style = "width: calc(50dvw - 4px);"
 
                 Odesti.appendChild(amount)
+
 
                 const send_btn = document.createElement("button")
                 send_btn.innerText = "Send Token"
@@ -816,4 +655,175 @@ async function refreshDEX() {
     })
 
     if (DEXListItems.length > 0) DEXListItems[0].click()
+}
+
+
+function switchWallet() {
+    const SeedWallet = document.getElementById("SeedWallet")
+    const PKWallet = document.getElementById("KeyWallet")
+
+    if (SeedWallet.style.display == "inline-block") {
+        SeedWallet.style.display = "none"
+        PKWallet.style.display = "inline-block"
+        refreshOmni(OmniBalance.Key[document.getElementById("KeySelect").children[0].children[0].dataset.index])
+    } else {
+        SeedWallet.style.display = "inline-block"
+        PKWallet.style.display = "none"
+        refreshOmni(OmniBalance.Seed[document.getElementById("SeedSelect").children[0].children[0].dataset.index])
+    }
+}
+
+function switchOmni() {
+    const OmniWallet = document.getElementById("OmniWallet")
+    const DEX = document.getElementById("DEX")
+
+    if (OmniWallet.style.display == "inline-block") {
+        OmniWallet.style.display = "none"
+        DEX.style.display = "inline-block"
+    } else {
+        OmniWallet.style.display = "inline-block"
+        DEX.style.display = "none"
+    }
+}
+
+
+function SendBtn(wallet) {
+    const TXB = new TX
+    const index = document.getElementById(wallet + "Select").children[0].children[0].dataset.index
+    const destination = document.getElementById(wallet + "Destination").value
+    const amount = document.getElementById(wallet + "Amount").value * 100000000
+
+    if (wallet == "Seed") {
+        const tx = TXB.Send(LTC, Addresses[wallet][index], destination, amount, UTXO[wallet][index], LTC.GetWifFromSeedAddress(index))
+
+        if (confirm("Submit TX?")) {
+            LTC.submitTX(tx)
+            document.getElementById("refreshWallet").click()
+        }
+    } else {
+        EnterPassword()
+
+        const Meta = getMeta()
+
+        document.getElementById("KeyConfirm").onclick = async function() {
+            const password = document.getElementById("KeyConfirmInput").value
+
+            if (await SHA256(password) != Meta.Password) {
+                alert("password wrong!")
+            } else {
+                const TXB = new TX
+                const wif = LTC.uint8ToWIF((await loadEncryptedKey(Meta["Litecoin"], password))[index])
+                const tx = TXB.Send(LTC, Addresses.Key[index], destination, amount, UTXO.Key[index], wif)
+
+                LTC.submitTX(tx)
+                
+                document.getElementById("refreshWallet").click()
+                document.getElementById("KeyConfirmInput").value = ""
+                document.getElementById("KeyConfirmDiv").remove()
+            }
+        }
+    }
+}
+
+function SendAllBtn(wallet) {
+    const TXB = new TX
+    const index = document.getElementById(wallet + "Select").children[0].children[0].dataset.index
+    const destination = document.getElementById(wallet + "Destination").value
+
+    if (wallet == "Seed") {
+        const tx = TXB.SendAll(LTC, destination, UTXO[wallet][index], LTC.GetWifFromSeedAddress(index))
+
+        if (confirm("Submit TX?")) {
+            LTC.submitTX(tx)
+            document.getElementById("refreshWallet").click()
+        }
+    } else {
+        EnterPassword()
+
+        const Meta = getMeta()
+
+        document.getElementById("KeyConfirm").onclick = async function() {
+            const password = document.getElementById("KeyConfirmInput").value
+
+            if (await SHA256(password) != Meta.Password) {
+                alert("password wrong!")
+            } else {
+                const TXB = new TX
+                const wif = LTC.uint8ToWIF((await loadEncryptedKey(Meta["Litecoin"], password))[index])
+                const tx = TXB.SendAll(LTC, destination, UTXO.Key[index], wif)
+                
+                LTC.submitTX(tx)
+
+                document.getElementById("refreshWallet").click()
+                document.getElementById("KeyConfirmInput").value = ""
+                document.getElementById("KeyConfirmDiv").remove()
+            }
+        }
+    }
+}
+
+function CopyAddressBtn(wallet) {
+    const index = document.getElementById(wallet + "Select").children[0].children[0].dataset.index
+
+    navigator.clipboard.writeText(Addresses[wallet][index])
+    document.getElementById(wallet + "CopyBtn").innerText = "copied!"
+
+    setTimeout(() => {
+        document.getElementById(wallet + "CopyBtn").innerText = "Copy Address"
+    }, 1337);
+}
+
+function EnterPassword() {
+    const Meta = getMeta()
+    let password
+
+    const div = document.createElement("div")
+    const input = document.createElement("input")
+    const confirm = document.createElement("button")
+    const cancel = document.createElement("button")
+
+    document.body.children[1].appendChild(div)
+    div.appendChild(input)
+    div.appendChild(confirm)
+    div.appendChild(cancel)
+
+    div.style.position = "absolute"
+    div.style.top = "50dvh"
+    div.style.left = "50dvw"
+    div.style.transform = "translate(-50%, -50%)"
+    div.style.background = "#222"
+    div.id = "KeyConfirmDiv"
+    div.style.padding = "3.7rem"
+    div.style.border = "1px solid #0f0"
+    div.style.borderRadius = "9px"
+
+    input.placeholder = "Enter Password"
+    input.type = "password"
+    input.id = "KeyConfirmInput"
+    
+    confirm.innerText = "Send"
+    confirm.id = "KeyConfirm"
+    /*confirm.onclick = async function() {
+        password = input.value
+
+        if (await SHA256(password) != Meta.Password) {
+            alert("password wrong!")
+        } else {
+            const TXB = new TX
+            const wif = await loadEncryptedKey(Meta["Litecoin"], password)
+
+    
+            const tx = TXB.SendPK(LTC, AddressesPK.Omni, UTXOpk.Omni, 49, IndexPK, wif)
+            LTC.submitTX(tx)
+            document.getElementById("refreshWallet").click()
+
+            input.value = ""
+            div.remove()
+        }
+    }*/
+
+    cancel.innerText = "Cancel"
+    cancel.onclick = function() {
+        div.remove()
+    }
 }

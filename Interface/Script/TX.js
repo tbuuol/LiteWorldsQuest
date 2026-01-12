@@ -3,32 +3,14 @@ class TX {
 
     }
 
-    SendSeed(LTC, Addresses, UTXO, adrType, Index, fee = 1) {
-        const origin = Addresses[Index]
-        const destination = document.getElementById("destination").value
-        const amount = document.getElementById("amount").value * 100000000
-        const utxos = UTXO[Index]
-
-        let ustx = LTC.Send(origin, destination, amount, utxos, 0)
-        let stx = LTC.Sign(ustx.buildIncomplete().toHex(), adrType, Index, utxos)
-
-        ustx = LTC.Send(origin, destination, amount, utxos, stx.virtualSize() * fee +1)
-        stx = LTC.Sign(ustx.buildIncomplete().toHex(), adrType, Index, utxos)
-
-        return stx.toHex()
+    Send(LTC, origin, destination, amount, UTXO, wif, fee = 1) {
+        const size = LTC.Sig(LTC.Send(origin, destination, amount, UTXO, 0).buildIncomplete(), UTXO, wif).virtualSize() * fee +1
+        return LTC.Sig(LTC.Send(origin, destination, amount, UTXO, size).buildIncomplete(), UTXO, wif).toHex()
     }
 
-    SendAllSeed(LTC, UTXO, adrType, Index, fee = 1) {
-        const utxos = UTXO[Index]
-        const destination = document.getElementById("destination").value
-
-        let ustx = LTC.SendAll(destination, utxos, 0)
-        let stx = LTC.Sign(ustx.buildIncomplete().toHex(), adrType, Index, utxos)
-
-        ustx = LTC.SendAll(destination, utxos, stx.virtualSize() * fee +1)
-        stx = LTC.Sign(ustx.buildIncomplete().toHex(), adrType, Index, utxos)
-
-        return stx.toHex()
+    SendAll(LTC, destination, UTXO, wif, fee = 1) {
+        const size = LTC.Sig(LTC.SendAll(destination, UTXO, 0).buildIncomplete(), UTXO, wif).virtualSize() * fee +1
+        return LTC.Sig(LTC.SendAll(destination, UTXO, size).buildIncomplete(), UTXO, wif).toHex()
     }
 
     TokenSend(LTC, origin, destiantion, payload, UTXO, WIF) {

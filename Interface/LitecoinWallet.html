@@ -59,26 +59,26 @@
                 </div>
 
                 <div style="display: flex; gap: 8px; width: 100dvw;">
-                    <input type="text" id="destination" placeholder="destination" style="width: calc(50dvw - 4px);">
-                    <input type="number" id="amount" placeholder="amount" step="0.0001" min="0.0001" style="width: calc(50dvw - 4px);">
+                    <input type="text" id="SeedDestination" placeholder="destination" style="width: calc(50dvw - 4px);">
+                    <input type="number" id="SeedAmount" placeholder="amount" step="0.0001" min="0.0001" style="width: calc(50dvw - 4px);">
                 </div>
 
                 <div style="display: flex; gap: 8px; width: 100dvw;">
-                    <button onclick="seedSendBtn()" style="width: calc(33.3dvw - 4px);">Send</button>
-                    <button onclick="seedSendAllBtn()" style="width: calc(33.3dvw - 4px);">Send All</button>
-                    <button onclick="copyAddressBtn()" id="copyBtn" style="width: calc(33.3dvw - 4px);">Copy Address</button>
+                    <button onclick="SendBtn('Seed')" style="width: calc(33.3dvw - 4px);">Send</button>
+                    <button onclick="SendAllBtn('Seed')" style="width: calc(33.3dvw - 4px);">Send All</button>
+                    <button onclick="CopyAddressBtn('Seed')" id="SeedCopyBtn" style="width: calc(33.3dvw - 4px);">Copy Address</button>
                 </div>
             </div>
 
-            <div id="PKWallet" style="display: none; margin-top: 1rem;">
+            <div id="KeyWallet" style="display: none; margin-top: 1rem;">
                 <h3 style="color: #0f0;">PrivateKey Wallet</h3>
-                <div class="custom-select" id="PKselect">
+                <div class="custom-select" id="KeySelect">
                     <button type="button" class="select-trigger" aria-expanded="false">
                         <span class="select-value">Calculate Addresses</span>
                         <span class="select-arrow">▾</span>
                     </button>
 
-                    <ul id="PKAddresses" class="select-options">
+                    <ul id="KeyAddresses" class="select-options">
                         <li data-value="Hello User">Add a Private Key</li>
                     </ul>
 
@@ -86,11 +86,11 @@
                     <input type="hidden" id="PKadrIndex">
                 </div>
 
-                <input type="text" id="PKdestination" placeholder="destination" style="width: calc(50dvw - 4px);">
-                <input type="number" id="PKamount" placeholder="amount" step="0.0001" min="0.0001" style="width: calc(50dvw - 4px);">
-                <button onclick="pkSendBtn()" style="width: calc(33.3dvw - 4px);">Send</button>
-                <button onclick="pkSendAllBtn()" style="width: calc(33.3dvw - 4px);">Send All</button>
-                <button onclick="pkCopyAddressBtn()" id="PKcopyBtn" style="width: calc(33.3dvw - 4px);">Copy Address</button>
+                <input type="text" id="KeyDestination" placeholder="destination" style="width: calc(50dvw - 4px);">
+                <input type="number" id="KeyAmount" placeholder="amount" step="0.0001" min="0.0001" style="width: calc(50dvw - 4px);">
+                <button onclick="SendBtn('Key')" style="width: calc(33.3dvw - 4px);">Send</button>
+                <button onclick="SendAllBtn('Key')" style="width: calc(33.3dvw - 4px);">Send All</button>
+                <button onclick="CopyAddressBtn('Key')" id="KeyCopyBtn" style="width: calc(33.3dvw - 4px);">Copy Address</button>
             </div>
 
             <div id="OmniWallet" style="display: inline-block; margin-top: 1rem; width: 100dvw;">

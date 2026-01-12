@@ -108,16 +108,16 @@ class Litecoin {
         this.root = bitcoin.bip32.fromSeed(seed, this.network)
 
         const array = new Array
-        array.Legacy = new Array // Legacy
-        array.Omni = new Array // Omni
+        //array.Legacy = new Array // Legacy
+        //array.Omni = new Array // Omni
         //array.SegWit = new Array // SegWit
 
         for (let a = 0; a < 20; a++) {
-            const childpkh = this.root.derivePath("m/44'/2'/0'/0/" +a)
-            const keypairpkh = bitcoin.payments.p2pkh({ 
-                pubkey: childpkh.publicKey, 
-                network: this.network 
-            })
+            //const childpkh = this.root.derivePath("m/44'/2'/0'/0/" +a)
+            //const keypairpkh = bitcoin.payments.p2pkh({ 
+            //    pubkey: childpkh.publicKey, 
+            //    network: this.network 
+            //})
 
             const childsh = this.root.derivePath("m/49'/2'/0'/0/" +a)
             const keypairsh = bitcoin.payments.p2sh({
@@ -133,8 +133,8 @@ class Litecoin {
                 network: this.network 
             })*/
 
-            array.Legacy.push(keypairpkh.address)
-            array.Omni.push(keypairsh.address)
+            //array.Legacy.push(keypairpkh.address)
+            array.push(keypairsh.address)
             //array.SegWit.push(keypairwpkh.address)
         }
 
@@ -143,42 +143,41 @@ class Litecoin {
 
     AddressesFromWIF(wif) {
         const array = new Array
-        array.Legacy = new Array // Legacy
-        array.Omni = new Array // Omni
-        array.SegWit = new Array // SegWit
+        //array.Legacy = new Array // Legacy
+        //array.Omni = new Array // Omni
+        //array.SegWit = new Array // SegWit
 
         for (let a = 0; a < wif.length; a++) {
-        const keypair = bitcoin.ECPair.fromWIF(wif[a], this.network)
+        const child = bitcoin.ECPair.fromWIF(wif[a], this.network)
         
 
-        const Legacy = bitcoin.payments.p2pkh({ 
-            pubkey: keypair.publicKey, 
-            network: this.network 
-        })
+        //const Legacy = bitcoin.payments.p2pkh({ 
+        //    pubkey: keypair.publicKey, 
+        //    network: this.network 
+        //})
 
-        const Omni = bitcoin.payments.p2sh({
+        const keypair = bitcoin.payments.p2sh({
             redeem: bitcoin.payments.p2wpkh({ 
-            pubkey: keypair.publicKey, 
+            pubkey: child.publicKey, 
             network: this.network }), 
             network: this.network
         })
 
-        const SegWit = bitcoin.payments.p2wpkh({ 
-            pubkey: keypair.publicKey, 
-            network: this.network 
-        })
+        //const SegWit = bitcoin.payments.p2wpkh({ 
+        //    pubkey: keypair.publicKey, 
+        //    network: this.network 
+        //})
 
-        array.Legacy.push(Legacy.address)
-        array.Omni.push(Omni.address)
-        array.SegWit.push(SegWit.address) 
+        //array.Legacy.push(Legacy.address)
+        array.push(keypair.address)
+        //array.SegWit.push(SegWit.address) 
         }
 
         return array
     }
 
-    GetWifFromSeedAddress(Type, Index) {
-        const child = this.root.derivePath("m/"+Type+"'/2'/0'/0/" +Index)
-        return this.root.derivePath("m/"+Type+"'/2'/0'/0/" +Index).toWIF()
+    GetWifFromSeedAddress(Index) {
+        return this.root.derivePath("m/49'/2'/0'/0/" +Index).toWIF()
     }
 
     async UTXO(addresses) {
@@ -244,6 +243,24 @@ class Litecoin {
         txb.addOutput(destination, totalInput - fee)
 
         return txb
+    }
+
+    Sig(tx, utxo, wif) {
+        const txb = bitcoin.TransactionBuilder.fromTransaction(tx, this.network)
+        const utxos = utxo.map(u => u.value)
+        const child = bitcoin.ECPair.fromWIF(wif, this.network)
+        const a = bitcoin.payments.p2sh({
+            redeem: bitcoin.payments.p2wpkh({
+            pubkey: child.publicKey,
+            network: this.network }),
+            network: this.network
+        })
+
+        for (let i = 0; i < tx.ins.length; i++) {
+            txb.sign(i, child, a.redeem.output, null, utxos[i])
+        }
+
+        return txb.build()
     }
 
     Sign(unsignedHex, addrType, addrIndex, utxos) {
