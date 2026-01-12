@@ -13,19 +13,18 @@ class TX {
         return LTC.Sig(LTC.SendAll(destination, UTXO, size).buildIncomplete(), UTXO, wif).toHex()
     }
 
-    TokenSend(LTC, origin, destiantion, payload, UTXO, WIF) {
+    TokenSend(LTC, origin, destiantion, payload, UTXO, WIF, fee = 1) {
         const OParray = payload.match(/.{2}/g).map(b => parseInt(b, 16))
         const OPreturn = bitcoin.script.compile(OParray)
 
         let ustx = LTC.Send(origin, destiantion, 5400, UTXO, 0)
         ustx.addOutput(OPreturn, 0)
+        let stx = LTC.Sig(ustx.buildIncomplete(), UTXO, WIF)
 
-        let stx = LTC.SignPK(ustx.buildIncomplete().toHex(), 49, UTXO, WIF)
-
-        ustx = LTC.Send(origin, destiantion, 5400, UTXO, stx.virtualSize() +1)
+        ustx = LTC.Send(origin, destiantion, 5400, UTXO, stx.virtualSize() * fee +1)
         ustx.addOutput(OPreturn, 0)
 
-        return stx = LTC.SignPK(ustx.buildIncomplete().toHex(), 49, UTXO, WIF)
+        return LTC.Sig(ustx.buildIncomplete(), UTXO, WIF).toHex()
     }
 
     SendPK(LTC, Addresses, UTXO, adrType, Index, wif, fee = 1) {
