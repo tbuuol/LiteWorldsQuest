@@ -537,8 +537,80 @@ async function refreshOmni(Balance, wallet) {
             Odesti.appendChild(destination)
 
             if (item.dataset.type == "NFT") {
+                console.log(document.getElementById("oRange").parentNode)
 
+                document.getElementById("oRange").innerHTML = ""
+                document.getElementById("oRange").parentNode.style.display = "block"
+
+                const NFTs = await OMNI.getNFTs(document.getElementById(wallet + "Select").children[0].children[0].dataset.address, item.dataset.id)
+                console.log(NFTs[0].tokens)
+
+                for (let a = 0; a < NFTs[0].tokens.length; a++) {
+                    const element = NFTs[0].tokens[a]
+
+                    const range = document.createElement("b")
+                    range.innerHTML = element.tokenstart + "-" + element.tokenend + " "
+                    
+                    document.getElementById("oRange").appendChild(range)
+                }
+
+                const token = document.createElement("input")
+                token.type = "amount"
+                token.placeholder = "tokenID"
+                token.step = "1"
+                token.style = "width: calc(50dvw - 4px);"
+
+                Odesti.appendChild(token)
+
+                const send_btn = document.createElement("button")
+                send_btn.innerText = "Send NFT"
+                send_btn.onclick = async function() {
+                    const payload = await OMNI.OPsendNFT(parseInt(item.dataset.id), parseInt(token.value))
+                    console.log(payload)
+                    const origin = document.getElementById(wallet + "Select").children[0].children[0].dataset.address
+                    const index = document.getElementById(wallet + "Select").children[0].children[0].dataset.index
+                    const TXB = new TX
+
+                    if (wallet == "Seed") {
+                        const tx = TXB.TokenSend(LTC, origin, destination.value, payload, UTXO[wallet][index], LTC.GetWifFromSeedAddress(index))
+
+                        if (confirm("Submit TX?")) {
+                            LTC.submitTX(tx)
+                            document.getElementById("refreshWallet").click()
+                        }
+                    } else {
+                        console.log(wallet)
+                        EnterPassword()
+
+                        const Meta = getMeta()
+
+                        document.getElementById("KeyConfirm").onclick = async function() {
+                            const password = document.getElementById("KeyConfirmInput").value
+
+                            if (await SHA256(password) != Meta.Password) {
+                                alert("password wrong!")
+                            } else {
+                                const TXB = new TX
+                                const wif = LTC.uint8ToWIF((await loadEncryptedKey(Meta["Litecoin"], password))[index])
+                                console.log(LTC, origin, destination.value, payload, UTXO[wallet][index], wif)
+                                const tx = TXB.TokenSend(LTC, origin, destination.value, payload, UTXO[wallet][index], wif)
+                                console.log(tx)
+
+                                LTC.submitTX(tx)
+                                
+                                document.getElementById("refreshWallet").click()
+                                document.getElementById("KeyConfirmInput").value = ""
+                                document.getElementById("KeyConfirmDiv").remove()
+                            }
+                        }
+                    }
+                    
+                }
+
+                Obtn.appendChild(send_btn)
             } else {
+                document.getElementById("oRange").parentNode.style.display = "none"
+
                 const amount = document.createElement("input")
                 amount.type = "number"
                 amount.placeholder = "amount"
@@ -559,7 +631,7 @@ async function refreshOmni(Balance, wallet) {
                         const tx = TXB.TokenSend(LTC, origin, destination.value, payload, UTXO[wallet][index], LTC.GetWifFromSeedAddress(index))
 
                         if (confirm("Submit TX?")) {
-                            LTC.submitTX(tx.toHex())
+                            LTC.submitTX(tx)
                             document.getElementById("refreshWallet").click()
                         }
                     } else {

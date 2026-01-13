@@ -27,6 +27,7 @@ switch ($_GET['method']) {
         break;
 
     case 'getnfts':
+        if (isset($_GET["id"])) Out(Node('omni_getnonfungibletokens', [$_GET["adr"], (int)$_GET["id"]]));
         Out(Node('omni_getnonfungibletokens', [$_GET["adr"]]));
         break;
 
