@@ -41,8 +41,8 @@ class Omnilayer {
       return e
     }
 
-    async getNFTs(address) {
-      const p = await fetch(this.URL + "getnfts&adr=" + address)
+    async getNFTs(address, id) {
+      const p = await fetch(this.URL + "getnfts&adr=" + address + "&id=" + id)
       return await p.json()
     }
 

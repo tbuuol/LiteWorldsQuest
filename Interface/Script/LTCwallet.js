@@ -357,7 +357,7 @@ async function updateSeedWallet() {
             SeedValue.dataset.balance = item.dataset.balance
             SeedValue.dataset.index = item.dataset.index
             
-            refreshOmni(OmniBalance.Seed[item.dataset.index], "Seed")
+            if (document.getElementById("SeedWallet").style.display != "none") refreshOmni(OmniBalance.Seed[item.dataset.index], "Seed")
             SeedClose()
         })
     })
@@ -542,7 +542,7 @@ async function refreshOmni(Balance, wallet) {
                 document.getElementById("oRange").innerHTML = ""
                 document.getElementById("oRange").parentNode.style.display = "block"
 
-                const NFTs = await OMNI.getNFTs(document.getElementById(wallet + "Select").children[0].children[0].dataset.address, item.dataset.id)
+                const NFTs = await OMNI.getNFTs(document.getElementById(wallet + "Select").children[0].children[0].dataset.address, parseInt(item.dataset.id))
                 console.log(NFTs[0].tokens)
 
                 for (let a = 0; a < NFTs[0].tokens.length; a++) {
