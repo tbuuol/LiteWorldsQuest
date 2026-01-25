@@ -50,7 +50,8 @@ main {
     background: #222; /* Hintergrund für Main */
     padding-top: 8dvh; /* Gleiche Höhe wie der Header, damit der Inhalt nicht unter den Header rutscht */
     box-sizing: border-box;
-    overflow: hidden; /* Verhindert Überlauf */
+    overflow-x: hidden; /* Verhindert Überlauf */
+    overflow-y: scroll;
     position: relative;
     z-index: 1;
 

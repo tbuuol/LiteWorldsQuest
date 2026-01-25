@@ -13,6 +13,23 @@ class TX {
         return LTC.Sig(LTC.SendAll(destination, UTXO, size).buildIncomplete(), UTXO, wif).toHex()
     }
 
+    SendSelf(LTC, origin, payload, UTXO, wif, fee = 1) {
+        const OParray = payload.match(/.{2}/g).map(b => parseInt(b, 16))
+        const OPreturn = bitcoin.script.compile(OParray)
+
+        let ustx = LTC.SendSelf(origin, UTXO, 0)
+        ustx.addOutput(OPreturn, 0)
+        let stx = LTC.Sig(ustx.buildIncomplete(), UTXO, wif)
+
+        ustx = LTC.SendSelf(origin, UTXO, stx.virtualSize() * fee +1)
+        ustx.addOutput(OPreturn, 0)
+
+        return LTC.Sig(ustx.buildIncomplete(), UTXO, wif).toHex()
+
+        const size = LTC.Sig(LTC.SendSelf(origin, UTXO, 0).buildIncomplete(), UTXO, wif).virtualSize() * fee +1
+        return LTC.Sig(LTC.SendSelf(origin, UTXO, size).buildIncomplete(), UTXO, wif).toHex()
+    }
+
     TokenSend(LTC, origin, destiantion, payload, UTXO, WIF, fee = 1) {
         const OParray = payload.match(/.{2}/g).map(b => parseInt(b, 16))
         const OPreturn = bitcoin.script.compile(OParray)

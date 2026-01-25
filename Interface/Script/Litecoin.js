@@ -245,6 +245,32 @@ class Litecoin {
         return txb
     }
 
+    SendSelf(origin, utxos, fee) {
+        console.log(origin, utxos, fee)
+        const txb = new bitcoin.TransactionBuilder(this.network)
+
+        let totalInput = 0
+        for (let i = 0; i < utxos.length; i++) {
+            const utxo = utxos[i]
+            txb.addInput(utxo.txid, utxo.vout)
+            totalInput += utxo.value
+        }
+
+        if (totalInput < 5400 + fee) {
+            alert('Insufficient funds')
+            return
+        }
+
+        if (totalInput - fee < 5400) {
+            alert('dust error on change')
+            return
+        } else {
+            txb.addOutput(origin, totalInput - fee)
+        }
+
+        return txb
+    }
+
     Sig(tx, utxo, wif) {
         const txb = bitcoin.TransactionBuilder.fromTransaction(tx, this.network)
         const utxos = utxo.map(u => u.value)

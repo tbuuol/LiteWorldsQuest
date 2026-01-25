@@ -93,35 +93,49 @@
                 <button onclick="CopyAddressBtn('Key')" id="KeyCopyBtn" style="width: calc(33.3dvw - 4px);">Copy Address</button>
             </div>
 
-            <div id="OmniWallet" style="display: inline-block; margin-top: 1rem; width: 100dvw;">
-                <h3 style="color: #0f0;">Omni Wallet</h3>
-                <div class="custom-select" id="OmniSelect">
-                    <button type="button" class="select-trigger" aria-expanded="false">
-                        <span class="select-value">Loading Properties</span>
-                        <span class="select-arrow">▾</span>
-                    </button>
+            <div id="DEXlistingInfo" style="display: none;">
+                <p style="color: #0f0;">DEX Listing detected</p>
+            </div>
 
-                    <ul id="OmniList" class="select-options">
-                        <li data-value="Hello User">Nothing found</li>
-                    </ul>
+            <div style="position: relative; margin-top: 1rem; width: 100dvw;">
+                <div id="OmniWallet" style="display: inline-block; width: 49%; position: absolute; top: 0; left: 0;">
+                    <h3 style="color: #0f0;">Omni Wallet</h3>
+                    <div class="custom-select" id="OmniSelect">
+                        <button type="button" class="select-trigger" aria-expanded="false">
+                            <span class="select-value">Loading Properties</span>
+                            <span class="select-arrow">▾</span>
+                        </button>
+
+                        <ul id="OmniList" class="select-options">
+                            <li data-value="Hello User">Nothing found</li>
+                        </ul>
+                    </div>
+
+                    <div id="OmniDisplay" style="color: #0f0;font-size: 1rem; position: relative; word-break: break-all;">
+                        <p>PropertyID <b id="oID"></b></p>
+                        <p>Name <b id="oName"></b></p>
+                        <p>Balance <b id="oBalance"></b></p>
+                        <p>Category <b id="oCategory"></b></p>
+                        <p>Sub-Category <b id="oSubCategory"></b></p>
+                        <p>Type <b id="oType"></b></p>
+                        <p>Total Supply <b id="oSupply"></b></p>
+                        <p style="display: none;">Ranges <b id="oRange"></b></p>
+                        <p>Data <b id="oData"></b></p>
+                        <img id="oImage" style="position: absolute; top: 0; right: 0; max-width: 10rem; max-height: 10rem;">
+                        <div id="OmniDestination" style="display: flex; gap: 8px; width: 100%;"></div>
+                        <div id="OmniBTN" style="display: flex; width: 100%;"></div>
+                        <div id="OmniDEX" style="display: flex; width: 100%;"></div>
+                        <div id="OmniDEXBTN" style="display: flex; width: 100%;"></div>
+                    </div>
                 </div>
-
-                <div id="OmniDisplay" style="color: #0f0;font-size: 1rem;">
-                    <p>PropertyID <b id="oID"></b></p>
-                    <p>Name <b id="oName"></b></p>
-                    <p>Balance <b id="oBalance"></b></p>
-                    <p>Category <b id="oCategory"></b></p>
-                    <p>Sub-Category <b id="oSubCategory"></b></p>
-                    <p>Data <b id="oData"></b></p>
-                    <p>Type <b id="oType"></b></p>
-                    <p>Total Supply <b id="oSupply"></b></p>
-                    <p style="display: none;">Ranges <b id="oRange"></b></p>
-                    <div id="OmniDestination" style="display: flex; gap: 8px; width: 100dvw;"></div>
-                    <div id="OmniBTN" style="display: flex; width: 100dvw;"></div>
+                
+                <div id="DEXlisting" style="display: inline-block; width: 49%; position: absolute; top: 0; right: 0; color: #0f0;">
+                    <h3 style="color: #0f0;">DEX Listing on this Address</h3>
+                    <p id="DEXlistingData"></p>
                 </div>
             </div>
 
-            <div id="DEX" style="display: none; margin-top: 1rem; width: 100dvw;">
+            <div id="DEX" style="display: none; width: 49dvw;">
                 <h3 style="color: #0f0;">Dedicated Exchange</h3>
                 <div class="custom-select" id="DEXSelect">
                     <button type="button" class="select-trigger" aria-expanded="false">
@@ -134,16 +148,17 @@
                     </ul>
                 </div>
 
-                <div id="DEXDisplay" style="color: #0f0;font-size: 1rem;">
+                <div id="DEXDisplay" style="color: #0f0;font-size: 1rem; position: relative; word-break: break-all;">
                     <p>PropertyID <b id="dID"></b></p>
                     <p>Name <b id="dName"></b></p>
                     <p>Amount Avaialablle <b id="dBalance"></b></p>
                     <p>Price <b id="dPrice"></b></p>
                     <p>Category <b id="dCategory"></b></p>
                     <p>Sub-Category <b id="dSubCategory"></b></p>
-                    <p>Data <b id="dData"></b></p>
                     <p>Type <b id="dType"></b></p>
                     <p>Total Supply <b id="dSupply"></b></p>
+                    <p>Data <b id="dData"></b></p>
+                    <img id="dImage" style="position: absolute; top: 0; right: 0; max-width: 10rem; max-height: 10rem;">
                 </div>
             </div>
 

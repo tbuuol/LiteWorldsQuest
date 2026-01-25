@@ -1,6 +1,6 @@
 .custom-select {
   position: relative;
-  width: 100dvw;
+  width: 100%;
   font-family: system-ui, sans-serif;
 }
 
@@ -9,7 +9,7 @@
   all: unset;                 /* 💣 reset ALLES */
   box-sizing: border-box;
 
-  width: 100dvw;
+  width: 100%;
   padding: 12px;
   background: #111;
   color: #0f0;

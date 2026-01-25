@@ -357,7 +357,10 @@ async function updateSeedWallet() {
             SeedValue.dataset.balance = item.dataset.balance
             SeedValue.dataset.index = item.dataset.index
             
-            if (document.getElementById("SeedWallet").style.display != "none") refreshOmni(OmniBalance.Seed[item.dataset.index], "Seed")
+            if (document.getElementById("SeedWallet").style.display != "none") {
+                refreshOmni(OmniBalance.Seed[item.dataset.index], "Seed")
+                refreshDEX()
+            }
             SeedClose()
         })
     })
@@ -439,7 +442,10 @@ async function updateKeyWallet() {
             PKValue.dataset.balance = item.dataset.balance
             PKValue.dataset.index = item.dataset.index
 
-            if (document.getElementById("KeyWallet").style.display != "none") refreshOmni(OmniBalance.Key[item.dataset.index], "Key")
+            if (document.getElementById("KeyWallet").style.display != "none") {
+                refreshOmni(OmniBalance.Key[item.dataset.index], "Key")
+                refreshDEX()
+            }
             PKClose()
         })
     })
@@ -522,6 +528,15 @@ async function refreshOmni(Balance, wallet) {
 
             document.getElementById("oData").innerText = item.dataset.data
             document.getElementById("oType").innerText = item.dataset.type
+
+            try {
+                const data = JSON.parse(item.dataset.data)
+                if (data.hasOwnProperty("structure") && data.structure == "epic") {
+                    if (data.source == "ipfs") document.getElementById("oImage").src = "https://ipfs.io/ipfs/" + data.content
+                }
+            } catch (error) {
+                
+            }
 
 
             const Odesti = document.getElementById("OmniDestination")
@@ -608,6 +623,73 @@ async function refreshOmni(Balance, wallet) {
                 }
 
                 Obtn.appendChild(send_btn)
+
+                const showNFT_btn = document.createElement("button")
+                showNFT_btn.innerText = "Show NFTs"
+                showNFT_btn.onclick = async function() {
+                    const div = document.createElement("div")
+                    div.style.height = "80%"
+                    div.style.maxHeight = "80%"
+
+                    div.style.width = "80%"
+                    div.style.maxWidth = "80%"
+
+                    div.style.background = "#999"
+
+                    div.style.zIndex = "5"
+                    div.style.position = "absolute"
+                    div.style.top = "10%"
+                    div.style.left = "10%"
+
+                    div.style.overflow = "scroll"
+
+                    div.style.border = "1px solid black"
+                    div.style.borderRadius = "9px"
+
+                    div.onclick = function() {
+                        div.remove()
+                    }
+
+                    document.body.appendChild(div)
+
+                    for (let a = 0; a < NFTs[0].tokens.length; a++) {
+                        const tokens = NFTs[0].tokens[a]
+                        console.log(tokens)
+
+                        let id = tokens.tokenstart
+
+                        for (let b = 0; b < tokens.amount; b++) {
+                            console.log(id)
+
+                            const data = (await OMNI.getNFTdata(item.dataset.id, id))[0]
+                            console.log(data)
+
+                            let grantdata = data.grantdata
+
+                            try {
+                                grantdata = grantdata.replaceAll("{'", '{"')
+                                grantdata = grantdata.replaceAll("'}", '"}')
+                                grantdata = grantdata.replaceAll("':'", '":"')
+                                grantdata = grantdata.replaceAll("','", '","')
+
+                                console.log(grantdata)
+
+                                const obj = JSON.parse(grantdata)
+
+                                if (obj.hasOwnProperty("image") && obj.hasOwnProperty("name") && obj.hasOwnProperty("description") && obj.hasOwnProperty("attributes"))
+                                    DisplayNFT("Liteverse", obj, div)
+                                else if (obj.hasOwnProperty("name") && obj.hasOwnProperty("content") && obj.hasOwnProperty("type") && obj.hasOwnProperty("source") && obj.hasOwnProperty("structure"))
+                                    DisplayNFT("epic", obj, div)
+                            } catch (error) {
+                                console.warn(error)
+                            }
+
+                            id++
+                        }
+                    }
+                }
+
+                Obtn.appendChild(showNFT_btn)
             } else {
                 document.getElementById("oRange").parentNode.style.display = "none"
 
@@ -666,6 +748,31 @@ async function refreshOmni(Balance, wallet) {
                 Obtn.appendChild(send_btn)
             }
 
+            const Odex = document.getElementById("OmniDEX")
+            Odex.innerHTML = ""
+
+            const amount = document.createElement("input")
+            amount.type = "number"
+            amount.placeholder = "Amount"
+            amount.style = "width: calc(50dvw - 4px);"
+
+            const desire = document.createElement("input")
+            desire.type = "number"
+            desire.placeholder = "Desire"
+            desire.style = "width: calc(50dvw - 4px);"
+
+            Odex.appendChild(amount)
+            Odex.appendChild(desire)
+
+            const Odexbtn = document.getElementById("OmniDEXBTN")
+            Odexbtn.innerHTML = ""
+
+            const DEXlist = document.createElement("button")
+            DEXlist.innerText = "List Token"
+
+            Odexbtn.appendChild(DEXlist)
+
+
             OmniClose()
         })
     })
@@ -684,12 +791,112 @@ async function refreshDEX() {
 
     DEXList.innerHTML = ""
 
+    const DexListing = document.getElementById("DEXlistingInfo")
+    DexListing.style.display = "none"
+
+    const DEXdata = document.getElementById("DEXlistingData")
+
+    var address, DL = false
+
+    if (document.getElementById("SeedWallet").style.display != "none") address = document.getElementById("SeedSelect").children[0].children[0].dataset.address
+    else address = document.getElementById("KeySelect").children[0].children[0].dataset.address
+
 
     for (let a = 0; a < DEX.length; a++) {
         const element = DEX[a].propertyid
+        //console.log(DEX[a].seller, address)
         
         DEXids.push(element)
+
+        if (DEX[a].seller == address) {
+            DL = true
+            DexListing.style.display = "block"
+            console.log("Match", DEX[a])
+
+            DEXdata.innerHTML = ""
+
+            const propertyID = document.createElement("p")
+            propertyID.innerHTML = "<b>propertyID: </b>" + DEX[a].propertyid
+
+            const amountavailable = document.createElement("p")
+            amountavailable.innerHTML = "<b>amountavailable: </b>" + DEX[a].amountavailable
+
+            const amountaccepted = document.createElement("p")
+            amountaccepted.innerHTML = "<b>amountaccepted: </b>" + DEX[a].amountaccepted
+
+            const unitprice = document.createElement("p")
+            unitprice.innerHTML = "<b>unitprice: </b>" + DEX[a].unitprice + "<b> LTC</b>"
+
+            DEXdata.appendChild(propertyID)
+            DEXdata.appendChild(amountavailable)
+            DEXdata.appendChild(amountaccepted)
+            DEXdata.appendChild(unitprice)
+
+            const update = document.createElement("button")
+            update.innerText = "Update Listing"
+
+            const cancel = document.createElement("button")
+            cancel.innerText = "Cancel Listing"
+            cancel.onclick = async function() {
+                const payload = await OMNI.OPsetupDEX(DEX[a].propertyid, 0, 0, 3)
+                var origin, index
+
+                const TXB = new TX
+
+                if (document.getElementById("SeedWallet").style.display == "inline-block") {
+                    origin = document.getElementById("SeedSelect").children[0].children[0].dataset.address
+                    index = document.getElementById("SeedSelect").children[0].children[0].dataset.index
+
+                    console.log(LTC, origin, payload, UTXO["Seed"][index], LTC.GetWifFromSeedAddress(index))
+                    const tx = TXB.SendSelf(LTC, origin, payload, UTXO["Seed"][index], LTC.GetWifFromSeedAddress(index))
+                    console.log(tx)
+
+                    if (confirm("Submit TX?")) {
+                        LTC.submitTX(tx)
+                        document.getElementById("refreshWallet").click()
+                    }
+                } else {
+                    EnterPassword()
+                    document.getElementById("KeyConfirm").onclick = async function() {
+                        const password = document.getElementById("KeyConfirmInput").value
+                        const Meta = getMeta()
+
+                        if (await SHA256(password) != Meta.Password) {
+                            alert("password wrong!")
+                        } else {
+                            origin = document.getElementById("KeySelect").children[0].children[0].dataset.address
+                            index = document.getElementById("KeySelect").children[0].children[0].dataset.index
+                            
+
+                            //ToDo Finish cancel for KeyWallet
+
+                            const wif = LTC.uint8ToWIF((await loadEncryptedKey(Meta["Litecoin"], password))[index])
+
+                            const tx = TXB.SendSelf(LTC, origin, payload, UTXO["Key"][index], wif)
+                            console.log(tx)
+
+                            LTC.submitTX(tx)
+                            
+                            document.getElementById("refreshWallet").click()
+                            document.getElementById("KeyConfirmInput").value = ""
+                            document.getElementById("KeyConfirmDiv").remove()
+                        }
+                    }
+                }
+
+
+
+                
+                console.log(payload, origin, index)
+            }
+
+
+            DEXdata.appendChild(update)
+            DEXdata.appendChild(cancel)
+        }
     }
+
+    if (!DL) DEXdata.innerHTML = "none"
 
     const DEXproperties = await OMNI.getProperties(DEXids)
 
@@ -701,9 +908,19 @@ async function refreshDEX() {
         const item = document.createElement("li")
         item.innerText = element.propertyid + " - " + Property.name
 
-        item.dataset.propertyID = element.propertyid
+        item.dataset.id = element.propertyid
         item.dataset.amountavailable = element.amountavailable
+        item.dataset.seller = element.seller
         item.dataset.unitprice = element.unitprice
+        item.dataset.name = Property.name
+        item.dataset.category = Property.category
+        item.dataset.subcategory = Property.subcategory
+        item.dataset.supply = Property.totaltokens
+        item.dataset.data = Property.data
+
+        if (Property["non-fungibletoken"]) item.dataset.type = "NFT"
+        else if (Property.managedissuance) item.dataset.type = "Managed Supply"
+        else item.dataset.type = "Fixed Supply"
 
         DEXList.appendChild(item)
     }
@@ -738,20 +955,24 @@ async function refreshDEX() {
             document.getElementById("dBalance").innerText = item.dataset.amountavailable
             document.getElementById("dPrice").innerText = item.dataset.unitprice + " LTC"
 
-            const Property = await OMNI.getProperty(item.dataset.propertyID)
+            document.getElementById("dID").innerText = item.dataset.id
+            document.getElementById("dName").innerText = item.dataset.name
 
-            document.getElementById("dID").innerText = Property.propertyid
-            document.getElementById("dName").innerText = Property.name
+            document.getElementById("dCategory").innerText = item.dataset.category
+            document.getElementById("dSubCategory").innerText = item.dataset.subcategory
+            document.getElementById("dSupply").innerText = item.dataset.supply
+            document.getElementById("dType").innerText = item.dataset.type
 
-            document.getElementById("dCategory").innerText = Property.category
-            document.getElementById("dSubCategory").innerText = Property.subcategory
-            document.getElementById("dSupply").innerText = Property.totaltokens
+            document.getElementById("dData").innerText = item.dataset.data
 
-            document.getElementById("dData").innerText = Property.data
-
-            if (Property["non-fungibletoken"]) document.getElementById("dType").innerText = "NFT"
-            else if (Property.managedissuance)document.getElementById("dType").innerText = "Managed Supply"
-            else document.getElementById("dType").innerText = "Fixed Supply"
+            try {
+                const data = JSON.parse(item.dataset.data)
+                if (data.hasOwnProperty("structure") && data.structure == "epic") {
+                    if (data.source == "ipfs") document.getElementById("dImage").src = "https://ipfs.io/ipfs/" + data.content
+                }
+            } catch (error) {
+                
+            }
 
             DEXClose()
         })
@@ -774,6 +995,8 @@ function switchWallet() {
         PKWallet.style.display = "none"
         refreshOmni(OmniBalance.Seed[document.getElementById("SeedSelect").children[0].children[0].dataset.index], "Seed")
     }
+
+    refreshDEX()
 }
 
 function switchOmni() {
@@ -928,5 +1151,82 @@ function EnterPassword() {
     cancel.innerText = "Cancel"
     cancel.onclick = function() {
         div.remove()
+    }
+}
+
+
+function DisplayNFT(type, data, div) {
+    const IPFSbase = "https://ipfs.io/ipfs/"
+    const ORDbase = "https://ord.chikun.market/content/"
+
+    if (type == "Liteverse") {
+        const ipfs = data.image.split("ipfs://")[1]
+
+        const base = document.createElement("div")
+        base.style.display = "inline-block"
+        base.style.width = "12.5%"
+        base.style.height = "50%"
+        base.style.textAlign = "center"
+
+        div.appendChild(base)
+
+        const card = document.createElement("div")
+        card.style.display = "inline-block"
+        card.style.backgroundColor = "RGB(255,255,0,0.1)"
+        card.style.borderRadius = "9px"
+        card.style.width = "94%"
+        card.style.height = "96%"
+        //card.style.marginLeft = "3%"
+        card.style.marginTop = "2%"
+
+        base.appendChild(card)
+
+        const content = document.createElement("img")
+        content.src = IPFSbase + ipfs
+        content.style.height = "50%"
+        content.style.width = "100%"
+        content.style.objectFit = "cover"
+        content.style.borderRadius = "9px 9px 0px 0px"
+        
+        card.appendChild(content)
+
+        const name = document.createElement("p")
+        name.innerText = data.name
+        card.appendChild(name)
+    }
+
+    if (type == "epic") {
+        const base = document.createElement("div")
+        base.style.display = "inline-block"
+        base.style.width = "12.5%"
+        base.style.height = "50%"
+        base.style.textAlign = "center"
+
+        div.appendChild(base)
+
+        const card = document.createElement("div")
+        card.style.display = "inline-block"
+        card.style.backgroundColor = "RGB(0,0,255,0.1)"
+        card.style.borderRadius = "9px"
+        card.style.width = "94%"
+        card.style.height = "96%"
+        //card.style.marginLeft = "3%"
+        card.style.marginTop = "2%"
+
+        base.appendChild(card)
+
+        const content = document.createElement("img")
+        if (data.source == "ordinal") content.src = ORDbase + data.content
+        else content.src = IPFSbase + data.content
+        content.style.height = "50%"
+        content.style.width = "100%"
+        content.style.objectFit = "cover"
+        content.style.borderRadius = "9px 9px 0px 0px"
+        
+        card.appendChild(content)
+
+        const name = document.createElement("p")
+        name.innerText = data.name
+        card.appendChild(name)
     }
 }
