@@ -769,6 +769,48 @@ async function refreshOmni(Balance, wallet) {
 
             const DEXlist = document.createElement("button")
             DEXlist.innerText = "List Token"
+            DEXlist.onclick = async function() {
+                const payload = await OMNI.OPsetupDEX(parseInt(item.dataset.id), parseInt(amount.value), parseInt(desire.value), 1)
+                console.log(payload)
+
+                const TXB = new TX
+
+                if (document.getElementById("SeedWallet").style.display == "inline-block") {
+                    const origin = document.getElementById("SeedSelect").children[0].children[0].dataset.address
+                    const index = document.getElementById("SeedSelect").children[0].children[0].dataset.index
+
+                    const tx = TXB.SendSelf(LTC, origin, payload, UTXO["Seed"][index], LTC.GetWifFromSeedAddress(index))
+                    console.log(tx)
+
+                    if (confirm("Submit TX?")) {
+                        LTC.submitTX(tx)
+                        document.getElementById("refreshWallet").click()
+                    }
+                } else {
+                    EnterPassword()
+                    document.getElementById("KeyConfirm").onclick = async function() {
+                        const password = document.getElementById("KeyConfirmInput").value
+                        const Meta = getMeta()
+
+                        if (await SHA256(password) != Meta.Password) {
+                            alert("password wrong!")
+                        } else {
+                            const origin = document.getElementById("KeySelect").children[0].children[0].dataset.address
+                            const index = document.getElementById("KeySelect").children[0].children[0].dataset.index
+                            const wif = LTC.uint8ToWIF((await loadEncryptedKey(Meta["Litecoin"], password))[index])
+
+                            const tx = TXB.SendSelf(LTC, origin, payload, UTXO["Key"][index], wif)
+                            console.log(tx)
+
+                            LTC.submitTX(tx)
+                            
+                            document.getElementById("refreshWallet").click()
+                            document.getElementById("KeyConfirmInput").value = ""
+                            document.getElementById("KeyConfirmDiv").remove()
+                        }
+                    }
+                }
+            }
 
             Odexbtn.appendChild(DEXlist)
 
@@ -801,17 +843,16 @@ async function refreshDEX() {
     if (document.getElementById("SeedWallet").style.display != "none") address = document.getElementById("SeedSelect").children[0].children[0].dataset.address
     else address = document.getElementById("KeySelect").children[0].children[0].dataset.address
 
+    console.log(DEX)
 
     for (let a = 0; a < DEX.length; a++) {
         const element = DEX[a].propertyid
-        //console.log(DEX[a].seller, address)
-        
         DEXids.push(element)
 
         if (DEX[a].seller == address) {
             DL = true
             DexListing.style.display = "block"
-            console.log("Match", DEX[a])
+            console.log("Match", DEX[a], address)
 
             DEXdata.innerHTML = ""
 
@@ -832,8 +873,61 @@ async function refreshDEX() {
             DEXdata.appendChild(amountaccepted)
             DEXdata.appendChild(unitprice)
 
+            const amount = document.createElement("input")
+            amount.type = "number"
+            amount.placeholder = "amount"
+
+            const desire = document.createElement("input")
+            desire.type = "number"
+            desire.placeholder = "desire"
+            DEXdata.appendChild(amount)
+            DEXdata.appendChild(desire)
+
             const update = document.createElement("button")
             update.innerText = "Update Listing"
+            update.onclick = async function() {
+                const payload = await OMNI.OPsetupDEX(DEX[a].propertyid, parseInt(amount.value), parseInt(desire.value), 2)
+                var origin, index
+
+                const TXB = new TX
+
+                if (document.getElementById("SeedWallet").style.display == "inline-block") {
+                    origin = document.getElementById("SeedSelect").children[0].children[0].dataset.address
+                    index = document.getElementById("SeedSelect").children[0].children[0].dataset.index
+
+                    console.log(LTC, origin, payload, UTXO["Seed"][index], LTC.GetWifFromSeedAddress(index))
+                    const tx = TXB.SendSelf(LTC, origin, payload, UTXO["Seed"][index], LTC.GetWifFromSeedAddress(index))
+                    console.log(tx)
+
+                    if (confirm("Submit TX?")) {
+                        LTC.submitTX(tx)
+                        document.getElementById("refreshWallet").click()
+                    }
+                } else {
+                    EnterPassword()
+                    document.getElementById("KeyConfirm").onclick = async function() {
+                        const password = document.getElementById("KeyConfirmInput").value
+                        const Meta = getMeta()
+
+                        if (await SHA256(password) != Meta.Password) {
+                            alert("password wrong!")
+                        } else {
+                            origin = document.getElementById("KeySelect").children[0].children[0].dataset.address
+                            index = document.getElementById("KeySelect").children[0].children[0].dataset.index
+                            const wif = LTC.uint8ToWIF((await loadEncryptedKey(Meta["Litecoin"], password))[index])
+
+                            const tx = TXB.SendSelf(LTC, origin, payload, UTXO["Key"][index], wif)
+                            console.log(tx)
+
+                            LTC.submitTX(tx)
+                            
+                            document.getElementById("refreshWallet").click()
+                            document.getElementById("KeyConfirmInput").value = ""
+                            document.getElementById("KeyConfirmDiv").remove()
+                        }
+                    }
+                }
+            }
 
             const cancel = document.createElement("button")
             cancel.innerText = "Cancel Listing"
@@ -866,10 +960,6 @@ async function refreshDEX() {
                         } else {
                             origin = document.getElementById("KeySelect").children[0].children[0].dataset.address
                             index = document.getElementById("KeySelect").children[0].children[0].dataset.index
-                            
-
-                            //ToDo Finish cancel for KeyWallet
-
                             const wif = LTC.uint8ToWIF((await loadEncryptedKey(Meta["Litecoin"], password))[index])
 
                             const tx = TXB.SendSelf(LTC, origin, payload, UTXO["Key"][index], wif)
@@ -883,11 +973,6 @@ async function refreshDEX() {
                         }
                     }
                 }
-
-
-
-                
-                console.log(payload, origin, index)
             }
 
 
