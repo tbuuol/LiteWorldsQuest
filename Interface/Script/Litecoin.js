@@ -226,6 +226,38 @@ class Litecoin {
         return txb
     }
 
+    DEXpay(origin, destination, amount, utxos, fee) {
+        const txb = new bitcoin.TransactionBuilder(this.network)
+
+        if (amount < 5400) {
+            alert('dust error on sending amount')
+            return
+        }
+
+        let totalInput = 0
+        for (let i = 0; i < utxos.length; i++) {
+            const utxo = utxos[i]
+            txb.addInput(utxo.txid, utxo.vout)
+            totalInput += utxo.value
+        }
+
+        if (totalInput < amount + fee + 5460) {
+            alert('Insufficient funds')
+            return
+        }
+
+        const change = totalInput - amount - fee - 5460
+        if (change < 5400) {
+            alert('dust error on change')
+            return
+        } else {
+            txb.addOutput(origin, change)
+        }
+        txb.addOutput(destination, amount)
+
+        return txb
+    }
+
     SendAll(destination, utxos, fee) {
         const txb = new bitcoin.TransactionBuilder(this.network)
 

@@ -8,6 +8,39 @@ class TX {
         return LTC.Sig(LTC.Send(origin, destination, amount, UTXO, size).buildIncomplete(), UTXO, wif).toHex()
     }
 
+    SendPayload(LTC, origin, destination, amount, payload, UTXO, wif, fee = 1) {
+        const OParray = payload.match(/.{2}/g).map(b => parseInt(b, 16))
+        const OPreturn = bitcoin.script.compile(OParray)
+
+        let ustx = LTC.Send(origin, destination, amount, UTXO, 0)
+        ustx.addOutput(OPreturn, 0)
+        let stx = LTC.Sig(ustx.buildIncomplete(), UTXO, wif)
+
+        const size = stx.virtualSize() * fee +1
+
+        ustx = LTC.Send(origin, destination, amount, UTXO, size)
+        ustx.addOutput(OPreturn, 0)
+        stx = LTC.Sig(ustx.buildIncomplete(), UTXO, wif)
+        return stx.toHex()
+    }
+
+    SendDEXpay(LTC, origin, destination, amount, UTXO, wif, fee = 1) {
+        const exodus = "LTceXoduS2cetpWJSe47M25i5oKjEccN1h"
+        amount = amount * 100000000
+
+        console.log(origin, destination, amount, UTXO, 0)
+        let ustx = LTC.DEXpay(origin, destination, amount, UTXO, 0)
+        ustx.addOutput(exodus, 5460)
+        let stx = LTC.Sig(ustx.buildIncomplete(), UTXO, wif)
+
+        const size = stx.virtualSize() * fee +1
+
+        ustx = LTC.DEXpay(origin, destination, amount, UTXO, size)
+        ustx.addOutput(exodus, 5460)
+        stx = LTC.Sig(ustx.buildIncomplete(), UTXO, wif)
+        return stx.toHex()
+    }
+
     SendAll(LTC, destination, UTXO, wif, fee = 1) {
         const size = LTC.Sig(LTC.SendAll(destination, UTXO, 0).buildIncomplete(), UTXO, wif).virtualSize() * fee +1
         return LTC.Sig(LTC.SendAll(destination, UTXO, size).buildIncomplete(), UTXO, wif).toHex()

@@ -770,7 +770,7 @@ async function refreshOmni(Balance, wallet) {
             const DEXlist = document.createElement("button")
             DEXlist.innerText = "List Token"
             DEXlist.onclick = async function() {
-                const payload = await OMNI.OPsetupDEX(parseInt(item.dataset.id), parseInt(amount.value), parseInt(desire.value), 1)
+                const payload = await OMNI.OPsetupDEX(parseInt(item.dataset.id), parseFloat(amount.value), parseFloat(desire.value), 1)
                 console.log(payload)
 
                 const TXB = new TX
@@ -845,6 +845,7 @@ async function refreshDEX() {
 
     console.log(DEX)
 
+
     for (let a = 0; a < DEX.length; a++) {
         const element = DEX[a].propertyid
         DEXids.push(element)
@@ -886,7 +887,7 @@ async function refreshDEX() {
             const update = document.createElement("button")
             update.innerText = "Update Listing"
             update.onclick = async function() {
-                const payload = await OMNI.OPsetupDEX(DEX[a].propertyid, parseInt(amount.value), parseInt(desire.value), 2)
+                const payload = await OMNI.OPsetupDEX(DEX[a].propertyid, parseFloat(amount.value), parseFloat(desire.value), 2)
                 var origin, index
 
                 const TXB = new TX
@@ -1008,6 +1009,17 @@ async function refreshDEX() {
         else item.dataset.type = "Fixed Supply"
 
         DEXList.appendChild(item)
+
+        for (let b = 0; b < element.accepts.length; b++) {
+            if (element.accepts[b].buyer == address) {
+                console.log("Time to pay", element.accepts[b])
+                item.dataset.buy = true
+
+                item.dataset.blocksleft = element.accepts[b].blocksleft
+                item.dataset.amounttopay = element.accepts[b].amounttopay
+            }   
+            
+        }
     }
 
     const DEXListItems = [...DEXList.children]
@@ -1049,6 +1061,7 @@ async function refreshDEX() {
             document.getElementById("dType").innerText = item.dataset.type
 
             document.getElementById("dData").innerText = item.dataset.data
+            document.getElementById("dSeller").innerText = item.dataset.seller
 
             try {
                 const data = JSON.parse(item.dataset.data)
@@ -1057,6 +1070,115 @@ async function refreshDEX() {
                 }
             } catch (error) {
                 
+            }
+
+
+            const DEXbtn = document.getElementById("DEXbtn")
+            DEXbtn.innerHTML = ""
+
+            if (item.dataset.seller != address && !item.dataset.buy) {
+                const amount = document.createElement("input")
+                amount.type = "number"
+                amount.placeholder = "Amount"
+
+                
+                const request = document.createElement("button")
+                request.innerText = "Request"
+                request.onclick = async function() {
+                    const payload = await OMNI.OPbuyDEX(parseInt(item.dataset.id), parseFloat(amount.value))
+                    console.log(payload)
+                    const TXB = new TX
+
+                    if (document.getElementById("SeedWallet").style.display == "inline-block") {
+                        const origin = document.getElementById("SeedSelect").children[0].children[0].dataset.address
+                        const index = document.getElementById("SeedSelect").children[0].children[0].dataset.index
+
+                        const tx = TXB.SendPayload(LTC, origin, item.dataset.seller, 5400, payload, UTXO["Seed"][index], LTC.GetWifFromSeedAddress(index))
+                        console.log(tx)
+
+                        if (confirm("Submit TX?")) {
+                            LTC.submitTX(tx)
+                            document.getElementById("refreshWallet").click()
+                        }
+                    } else {
+                        EnterPassword()
+                        document.getElementById("KeyConfirm").onclick = async function() {
+                            const password = document.getElementById("KeyConfirmInput").value
+                            const Meta = getMeta()
+
+                            if (await SHA256(password) != Meta.Password) {
+                                alert("password wrong!")
+                            } else {
+                                const origin = document.getElementById("KeySelect").children[0].children[0].dataset.address
+                                const index = document.getElementById("KeySelect").children[0].children[0].dataset.index
+
+                                const wif = LTC.uint8ToWIF((await loadEncryptedKey(Meta["Litecoin"], password))[index])
+
+                                const tx = TXB.SendPayload(LTC, origin, item.dataset.seller, 5400, payload, UTXO["Key"][index], wif)
+                                console.log(tx)
+
+                                LTC.submitTX(tx)
+                                
+                                document.getElementById("refreshWallet").click()
+                                document.getElementById("KeyConfirmInput").value = ""
+                                document.getElementById("KeyConfirmDiv").remove()
+                            }
+                        }
+                    }
+                }
+
+                DEXbtn.appendChild(amount)
+                DEXbtn.appendChild(request)
+            }
+
+            if (item.dataset.buy && item.dataset.blocksleft > 3) {
+                console.log("Time to buy")
+
+                const pay = document.createElement("button")
+                pay.innerText = "Pay"
+                pay.onclick = async function() {
+                    const TXB = new TX
+
+                    if (document.getElementById("SeedWallet").style.display == "inline-block") {
+                        const origin = document.getElementById("SeedSelect").children[0].children[0].dataset.address
+                        const index = document.getElementById("SeedSelect").children[0].children[0].dataset.index
+
+                        const tx = TXB.SendDEXpay(LTC, origin, item.dataset.seller, parseFloat(item.dataset.amounttopay), UTXO["Seed"][index], LTC.GetWifFromSeedAddress(index))
+                        console.log(tx)
+
+                        if (confirm("Submit TX?")) {
+                            LTC.submitTX(tx)
+                            document.getElementById("refreshWallet").click()
+                        }
+                    } else {
+                        EnterPassword()
+                        document.getElementById("KeyConfirm").onclick = async function() {
+                            const password = document.getElementById("KeyConfirmInput").value
+                            const Meta = getMeta()
+
+                            if (await SHA256(password) != Meta.Password) {
+                                alert("password wrong!")
+                            } else {
+                                const origin = document.getElementById("KeySelect").children[0].children[0].dataset.address
+                                const index = document.getElementById("KeySelect").children[0].children[0].dataset.index
+
+                                const wif = LTC.uint8ToWIF((await loadEncryptedKey(Meta["Litecoin"], password))[index])
+
+                                const tx = TXB.SendDEXpay(LTC, origin, item.dataset.seller, parseFloat(item.dataset.amounttopay), UTXO["Key"][index], wif)
+                        
+                                console.log(tx)
+
+                                LTC.submitTX(tx)
+                                
+                                document.getElementById("refreshWallet").click()
+                                document.getElementById("KeyConfirmInput").value = ""
+                                document.getElementById("KeyConfirmDiv").remove()
+                            }
+                        }
+                    }
+                }
+
+                DEXbtn.appendChild(pay)
             }
 
             DEXClose()
